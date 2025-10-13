@@ -1,0 +1,51 @@
+{
+  "name": "sonic-privacy-pool",
+  "version": "0.1.0",
+  "description": "Privacy-focused dApp for anonymous token transfers on Sonic blockchain",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm run install:contracts && npm run install:frontend && npm run install:circuits",
+    "install:contracts": "cd contracts && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:circuits": "npm install -g circom snarkjs",
+    "dev": "concurrently \"npm run contracts:node\" \"npm run frontend:dev\"",
+    "build": "npm run contracts:compile && npm run circuits:compile && npm run frontend:build",
+    "contracts:compile": "cd contracts && npx hardhat compile",
+    "contracts:test": "cd contracts && npx hardhat test",
+    "contracts:node": "cd contracts && npx hardhat node",
+    "contracts:deploy:testnet": "cd contracts && npx hardhat run scripts/deploy.js --network sonic-testnet",
+    "contracts:deploy:mainnet": "cd contracts && npx hardhat run scripts/deploy.js --network sonic-mainnet",
+    "contracts:verify": "cd contracts && npx hardhat verify --network sonic-testnet",
+    "circuits:compile": "cd circuits && chmod +x compile.sh && ./compile.sh",
+    "circuits:setup": "cd circuits && node scripts/setup.js",
+    "circuits:verifier": "cd circuits && node scripts/generate-verifier.js",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:deploy": "cd frontend && vercel --prod",
+    "test": "npm run contracts:test && npm run frontend:test",
+    "lint": "npm run contracts:lint && npm run frontend:lint",
+    "format": "prettier --write \"**/*.{js,ts,json,md}\"",
+    "setup:env": "node scripts/setup-env.js"
+  },
+  "keywords": [
+    "privacy",
+    "zk-proof",
+    "sonic",
+    "blockchain",
+    "tornado-cash"
+  ],
+  "author": "Sonic Privacy Pool Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "snarkjs": "^0.7.5"
+  }
+}

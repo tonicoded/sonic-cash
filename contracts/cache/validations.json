@@ -1,0 +1,439 @@
+{
+  "version": "3.4",
+  "log": [
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:38"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Pausable.sol:Pausable": {
+        "src": "@openzeppelin/contracts/utils/Pausable.sol:17",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "paused()"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            }
+          ],
+          "types": {
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard": {
+        "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:25",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ReentrancyGuard",
+            "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:47"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            }
+          ],
+          "types": {
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "contracts/PoseidonHasher.sol:PoseidonHasher": {
+        "src": "contracts/PoseidonHasher.sol:9",
+        "version": {
+          "withMetadata": "d14e921d616695aac05dddc9273774c24152f90b604207823f599528b1aafd1f",
+          "withoutMetadata": "e2a89a66865458f0d9fedd4bc7faf0ee62e4c341d176ab79d29bd77a1bdfc32a",
+          "linkedWithoutMetadata": "e2a89a66865458f0d9fedd4bc7faf0ee62e4c341d176ab79d29bd77a1bdfc32a"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "contracts/PoseidonHasher.sol:PoseidonT3": {
+        "src": "contracts/PoseidonHasher.sol:45",
+        "version": {
+          "withMetadata": "48e8a34eebd9cad21c31262cd1bc86ee976c141fbdc29c58d4481cdd14a117d1",
+          "withoutMetadata": "7be0c0276ac7d081c82d6aff8762c664c00fec65de3e9a25cda2ccfc19481563",
+          "linkedWithoutMetadata": "7be0c0276ac7d081c82d6aff8762c664c00fec65de3e9a25cda2ccfc19481563"
+        },
+        "inherit": [],
+        "libraries": [
+          "contracts/PoseidonHasher.sol:PoseidonHasher"
+        ],
+        "methods": [
+          "poseidon(bytes32[2])"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "contracts/PoseidonHasher.sol:PoseidonT4": {
+        "src": "contracts/PoseidonHasher.sol:55",
+        "version": {
+          "withMetadata": "b40a1d43b744c1fea573b41ea27912d9f6cb4245f08e044cbaed0adcae86138e",
+          "withoutMetadata": "9285e57f5aae9c6a107bef0f0664d9fd50e8e953f68f149b9bef14e215134cb9",
+          "linkedWithoutMetadata": "9285e57f5aae9c6a107bef0f0664d9fd50e8e953f68f149b9bef14e215134cb9"
+        },
+        "inherit": [],
+        "libraries": [
+          "contracts/PoseidonHasher.sol:PoseidonHasher"
+        ],
+        "methods": [
+          "poseidon(bytes32[3])"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "contracts/PrivacyPool.sol:PrivacyPool": {
+        "src": "contracts/PrivacyPool.sol:15",
+        "version": {
+          "withMetadata": "2ac7c3d6aa528c189440dd4558b096ab0fb6f40fef23ef761f7f5870cffb5806",
+          "withoutMetadata": "d1480fc1b3ab0203a64df59c2f27434fcfa4d79a4046efc871d021247e1c5250",
+          "linkedWithoutMetadata": "d1480fc1b3ab0203a64df59c2f27434fcfa4d79a4046efc871d021247e1c5250"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Pausable.sol:Pausable",
+          "@openzeppelin/contracts/utils/Context.sol:Context",
+          "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard"
+        ],
+        "libraries": [
+          "contracts/PoseidonHasher.sol:PoseidonHasher"
+        ],
+        "methods": [
+          "(address)",
+          "deposit(bytes32)",
+          "withdraw(uint256[24],bytes32,bytes32,address payable,address payable,uint256)",
+          "pause()",
+          "unpause()",
+          "getRoot()",
+          "isNullifierUsed(bytes32)",
+          "getDepositCount()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "PrivacyPool",
+            "src": "contracts/PrivacyPool.sol:56"
+          },
+          {
+            "kind": "state-variable-immutable",
+            "name": "verifier",
+            "src": "contracts/PrivacyPool.sol:26"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "nextIndex",
+            "src": "contracts/PrivacyPool.sol:31"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            },
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            },
+            {
+              "label": "_owner",
+              "offset": 1,
+              "slot": "1",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "nullifiers",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_bytes32,t_bool)",
+              "contract": "PrivacyPool",
+              "src": "contracts/PrivacyPool.sol:29"
+            },
+            {
+              "label": "commitments",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_uint32,t_bytes32)",
+              "contract": "PrivacyPool",
+              "src": "contracts/PrivacyPool.sol:30"
+            },
+            {
+              "label": "nextIndex",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_uint32",
+              "contract": "PrivacyPool",
+              "src": "contracts/PrivacyPool.sol:31"
+            },
+            {
+              "label": "root",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_bytes32",
+              "contract": "PrivacyPool",
+              "src": "contracts/PrivacyPool.sol:32"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_bytes32": {
+              "label": "bytes32",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_bytes32,t_bool)": {
+              "label": "mapping(bytes32 => bool)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint32,t_bytes32)": {
+              "label": "mapping(uint32 => bytes32)",
+              "numberOfBytes": "32"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            },
+            "t_uint32": {
+              "label": "uint32",
+              "numberOfBytes": "4"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "contracts/Verifier.sol:Verifier": {
+        "src": "contracts/Verifier.sol:9",
+        "version": {
+          "withMetadata": "c4486dde6f8fa317ba1f622c35e03509aab4000c73cc1daf684c07d07085963b",
+          "withoutMetadata": "2ae3f6ad787c8b191d8443b1981758415c0429890ebe22c3b752fc309c967890",
+          "linkedWithoutMetadata": "2ae3f6ad787c8b191d8443b1981758415c0429890ebe22c3b752fc309c967890"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "()",
+          "verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[4])",
+          "updateVerifyingKey(uint256[2],uint256[2][2],uint256[2][2],uint256[2][2])",
+          "getVerifyingKey()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Verifier",
+            "src": "contracts/Verifier.sol:21"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "verifyingKey",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_struct(VerifyingKey)1035_storage",
+              "contract": "Verifier",
+              "src": "contracts/Verifier.sol:19"
+            }
+          ],
+          "types": {
+            "t_array(t_array(t_uint256)2_storage)2_storage": {
+              "label": "uint256[2][2]",
+              "numberOfBytes": "128"
+            },
+            "t_array(t_array(t_uint256)2_storage)dyn_storage": {
+              "label": "uint256[2][]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)2_storage": {
+              "label": "uint256[2]",
+              "numberOfBytes": "64"
+            },
+            "t_struct(VerifyingKey)1035_storage": {
+              "label": "struct Verifier.VerifyingKey",
+              "members": [
+                {
+                  "label": "alpha",
+                  "type": "t_array(t_uint256)2_storage",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "beta",
+                  "type": "t_array(t_array(t_uint256)2_storage)2_storage",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "gamma",
+                  "type": "t_array(t_array(t_uint256)2_storage)2_storage",
+                  "offset": 0,
+                  "slot": "6"
+                },
+                {
+                  "label": "delta",
+                  "type": "t_array(t_array(t_uint256)2_storage)2_storage",
+                  "offset": 0,
+                  "slot": "10"
+                },
+                {
+                  "label": "ic",
+                  "type": "t_array(t_array(t_uint256)2_storage)dyn_storage",
+                  "offset": 0,
+                  "slot": "14"
+                }
+              ],
+              "numberOfBytes": "480"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      }
+    }
+  ]
+}

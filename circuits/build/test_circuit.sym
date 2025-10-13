@@ -1,0 +1,5 @@
+1,1,0,main.commitment
+2,2,0,main.secret
+3,-1,0,main.nullifier
+4,3,0,main.recipient
+5,4,0,main.recipient_squared

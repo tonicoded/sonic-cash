@@ -1,0 +1,31 @@
+{
+  "name": "sonic-privacy-pool-contracts",
+  "version": "0.1.0",
+  "description": "Smart contracts for Sonic Privacy Pool",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network sonic-testnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network sonic-mainnet",
+    "verify": "hardhat verify --network sonic-testnet",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "format": "prettier --write 'contracts/**/*.sol'"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@openzeppelin/hardhat-upgrades": "^3.0.0",
+    "hardhat": "^2.19.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "prettier": "^3.0.3",
+    "prettier-plugin-solidity": "^1.2.0",
+    "solhint": "^4.0.0",
+    "solidity-coverage": "^0.8.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "circomlib": "^2.0.5",
+    "dotenv": "^17.2.3"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "network": "sonic-testnet",
+  "chainId": 14601,
+  "deployer": "0x17274Ed1A7874602cCa04130A2c08e1B5035e30E",
+  "timestamp": "2025-10-13T14:35:44.716Z",
+  "contracts": {
+    "PoseidonT3": {
+      "address": "0xE6fCa810120A65F8Ea6AD42972276B49393b37e7",
+      "txHash": "0x2c28054418254c6a04a647c49ea2bd2b51e5b04d9301d53790441429fca9df93"
+    },
+    "PoseidonT4": {
+      "address": "0x6da506938D316CF06Ce9167CCe4F2247eCe2D460",
+      "txHash": "0x61ee5aef3f8355786f9c8331212b8117d6b45bf9277da37a1a04a90c42ee3212"
+    },
+    "Verifier": {
+      "address": "0x59e6D424248e0e81c16d5b11d0edd1eC61AC40E0",
+      "txHash": "0xfd4c548fb10beeb74245b713d511ffe11a2d78789dcabe69609e35418b3ef029"
+    },
+    "PrivacyPool": {
+      "address": "0x99519DcF977438C51B394fAB88D740A16Cf929B6",
+      "txHash": "0x2145ee9accdc72146c1a31edf7f8177c8defd896ae84e426ecc737eb718d9fa5"
+    }
+  }
+}

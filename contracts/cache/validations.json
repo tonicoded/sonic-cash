@@ -130,6 +130,303 @@
         },
         "solcVersion": "0.8.20"
       },
+      "contracts/SonicTornado.sol:SonicTornado": {
+        "src": "contracts/SonicTornado.sol:13",
+        "version": {
+          "withMetadata": "e8f08de1ef39d2b887c5d64aa55affa3a8fba4e97715a8ed976e3b3c231468eb",
+          "withoutMetadata": "b8e259793527a92f844eb640ddd85de6662289f7deca61ab419a8ec46aeba1f4",
+          "linkedWithoutMetadata": "b8e259793527a92f844eb640ddd85de6662289f7deca61ab419a8ec46aeba1f4"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Pausable.sol:Pausable",
+          "@openzeppelin/contracts/utils/Context.sol:Context",
+          "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard"
+        ],
+        "libraries": [],
+        "methods": [
+          "()",
+          "deposit(bytes32)",
+          "withdraw(uint256,bytes32,address payable,address payable,uint256,bytes32[])",
+          "batchWithdraw(uint256[],bytes32[],address payable,address payable,uint256,bytes32[][])",
+          "getRoot(uint256)",
+          "isNullifierUsed(uint256,bytes32)",
+          "getDepositCount(uint256)",
+          "updateRelayerFee(uint256)",
+          "pause()",
+          "unpause()",
+          "getTotalValueLocked()",
+          "getAnonymitySetSize()",
+          "isContract(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SonicTornado",
+            "src": "contracts/SonicTornado.sol:73"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "relayerFeePercent",
+            "src": "contracts/SonicTornado.sol:26"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            },
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            },
+            {
+              "label": "_owner",
+              "offset": 1,
+              "slot": "1",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "relayerFeePercent",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "SonicTornado",
+              "src": "contracts/SonicTornado.sol:26"
+            },
+            {
+              "label": "pools",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_uint256,t_struct(Pool)414_storage)",
+              "contract": "SonicTornado",
+              "src": "contracts/SonicTornado.sol:30"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_bytes32": {
+              "label": "bytes32",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_bytes32,t_bool)": {
+              "label": "mapping(bytes32 => bool)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_struct(Pool)414_storage)": {
+              "label": "mapping(uint256 => struct SonicTornado.Pool)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint32,t_bytes32)": {
+              "label": "mapping(uint32 => bytes32)",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Pool)414_storage": {
+              "label": "struct SonicTornado.Pool",
+              "members": [
+                {
+                  "label": "commitments",
+                  "type": "t_mapping(t_bytes32,t_bool)",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "nullifiers",
+                  "type": "t_mapping(t_bytes32,t_bool)",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "filledSubtrees",
+                  "type": "t_mapping(t_uint32,t_bytes32)",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "nextIndex",
+                  "type": "t_uint32",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "root",
+                  "type": "t_bytes32",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "denomination",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "5"
+                }
+              ],
+              "numberOfBytes": "192"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            },
+            "t_uint32": {
+              "label": "uint32",
+              "numberOfBytes": "4"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:38"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Pausable.sol:Pausable": {
+        "src": "@openzeppelin/contracts/utils/Pausable.sol:17",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "paused()"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            }
+          ],
+          "types": {
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard": {
+        "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:25",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ReentrancyGuard",
+            "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:47"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            }
+          ],
+          "types": {
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
       "contracts/PoseidonHasher.sol:PoseidonHasher": {
         "src": "contracts/PoseidonHasher.sol:9",
         "version": {

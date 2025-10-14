@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Sonic Privacy Pool</title>
+    <title>Sonic Tornado - Privacy Pool</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <style>
         * {
@@ -43,7 +43,7 @@
         }
 
         .container {
-            max-width: 520px;
+            max-width: 600px;
             width: 100%;
             position: relative;
             z-index: 1;
@@ -56,7 +56,7 @@
         }
 
         .header h1 {
-            font-size: 3.2rem;
+            font-size: 3.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066cc 100%);
             -webkit-background-clip: text;
@@ -69,7 +69,7 @@
 
         .subtitle {
             color: #a0b3cc;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 500;
             opacity: 0.9;
             letter-spacing: 0.5px;
@@ -88,6 +88,69 @@
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 32px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(0, 212, 255, 0.2);
+            border-radius: 16px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-value {
+            color: #00d4ff;
+            font-family: 'Inter', ui-monospace, SFMono-Regular, monospace;
+            font-weight: 600;
+        }
+
+        .denomination-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .denomination-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .denomination-card:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .denomination-card.selected {
+            border-color: rgba(0, 212, 255, 0.6);
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
+        }
+
+        .denomination-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .denomination-info {
+            color: #a0b3cc;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .form-group {
@@ -148,6 +211,7 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
             font-family: 'Inter', sans-serif;
             letter-spacing: 0.3px;
+            margin-bottom: 12px;
         }
 
         .btn:hover:not(:disabled) {
@@ -203,25 +267,6 @@
             color: #f87171;
         }
 
-        .status {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1.5px solid rgba(0, 212, 255, 0.2);
-            border-radius: 16px;
-            margin-bottom: 32px;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        .status-value {
-            color: #00d4ff;
-            font-family: 'Inter', ui-monospace, SFMono-Regular, monospace;
-            font-weight: 600;
-        }
-
         .loading {
             display: inline-block;
             width: 18px;
@@ -232,6 +277,35 @@
             border-right-color: #0099ff;
             animation: spin 1s linear infinite;
             margin-right: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #a0b3cc;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         @keyframes spin {
@@ -260,13 +334,6 @@
             }
         }
 
-        .amount-input {
-            text-align: center;
-            font-size: 20px !important;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
         .footer {
             text-align: center;
             margin-top: 48px;
@@ -293,7 +360,7 @@
             }
             
             .header h1 {
-                font-size: 2.4rem;
+                font-size: 2.8rem;
             }
             
             .card {
@@ -301,16 +368,12 @@
                 border-radius: 20px;
             }
             
-            .form-group input {
-                padding: 16px 18px;
-                font-size: 16px;
-                border-radius: 12px;
+            .denomination-grid {
+                grid-template-columns: 1fr;
             }
             
-            .btn {
-                padding: 18px 20px;
-                font-size: 16px;
-                border-radius: 12px;
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -318,8 +381,24 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Sonic Privacy Pool</h1>
-            <p class="subtitle">Anonymous Token Transfers</p>
+            <h1>Sonic Tornado</h1>
+            <p class="subtitle">Advanced Privacy Pool Protocol</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="anonymitySet">-</div>
+                <div class="stat-label">Anonymity Set</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalValueLocked">-</div>
+                <div class="stat-label">TVL (S)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="relayerFee">0.3%</div>
+                <div class="stat-label">Relayer Fee</div>
+            </div>
         </div>
 
         <div class="card">
@@ -332,37 +411,54 @@
             <!-- Alerts -->
             <div id="alerts"></div>
 
-            <!-- Send Form -->
+            <!-- Denomination Selection -->
             <div class="form-group">
-                <label for="amount">Amount</label>
-                <input 
-                    type="number" 
-                    id="amount" 
-                    class="amount-input"
-                    placeholder="0.00"
-                    step="0.001"
-                    min="0.001">
+                <label>Select Denomination</label>
+                <div class="denomination-grid">
+                    <div class="denomination-card" data-denomination="0.1">
+                        <div class="denomination-amount">0.1 S</div>
+                        <div class="denomination-info">Small amount</div>
+                    </div>
+                    <div class="denomination-card" data-denomination="1">
+                        <div class="denomination-amount">1 S</div>
+                        <div class="denomination-info">Standard</div>
+                    </div>
+                    <div class="denomination-card" data-denomination="10">
+                        <div class="denomination-amount">10 S</div>
+                        <div class="denomination-info">Medium</div>
+                    </div>
+                    <div class="denomination-card" data-denomination="100">
+                        <div class="denomination-amount">100 S</div>
+                        <div class="denomination-info">Large amount</div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Recipient Address -->
             <div class="form-group">
                 <label for="recipient">Recipient Address</label>
                 <input 
                     type="text" 
                     id="recipient" 
-                    placeholder="Recipient address">
+                    placeholder="0x... (leave empty for deposit only)">
             </div>
 
-            <button class="btn" id="sendBtn" onclick="sendAnonymously()">
-                <span id="sendText">Send Anonymously</span>
+            <!-- Action Buttons -->
+            <button class="btn" id="depositBtn" onclick="deposit()" disabled>
+                <span id="depositText">Select Denomination to Deposit</span>
             </button>
 
-            <button class="btn btn-secondary" id="connectBtn" onclick="connectWallet()" style="margin-top: 12px;">
+            <button class="btn" id="withdrawBtn" onclick="withdraw()">
+                <span id="withdrawText">Withdraw from Pool</span>
+            </button>
+
+            <button class="btn btn-secondary" id="connectBtn" onclick="connectWallet()">
                 Connect Wallet
             </button>
         </div>
 
         <div class="footer">
-            Built for <a href="https://soniclabs.org" target="_blank">Sonic</a>
+            Privacy-first protocol built for <a href="https://soniclabs.org" target="_blank">Sonic</a>
         </div>
     </div>
 
@@ -370,14 +466,71 @@
         // Configuration
         const SONIC_TESTNET_CHAIN_ID = '0x3909'; // 14601
         const SONIC_TESTNET_RPC = 'https://rpc.testnet.soniclabs.com';
+        const TORNADO_ADDRESS = '0x8B0Bc7243B3FF42812926023B4687Ca996b797d6';
+
+        // Contract ABI
+        const TORNADO_ABI = [
+            {
+                "inputs": [{"type": "bytes32", "name": "commitment"}],
+                "name": "deposit",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"type": "uint256", "name": "denomination"},
+                    {"type": "bytes32", "name": "nullifier"},
+                    {"type": "address", "name": "recipient"},
+                    {"type": "address", "name": "relayer"},
+                    {"type": "uint256", "name": "fee"},
+                    {"type": "bytes32[]", "name": "merkleProof"}
+                ],
+                "name": "withdraw",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [{"type": "uint256", "name": "denomination"}],
+                "name": "getRoot",
+                "outputs": [{"type": "bytes32", "name": ""}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getAnonymitySetSize",
+                "outputs": [{"type": "uint256", "name": ""}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getTotalValueLocked",
+                "outputs": [{"type": "uint256", "name": ""}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "relayerFeePercent",
+                "outputs": [{"type": "uint256", "name": ""}],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
 
         let web3;
         let account;
+        let selectedDenomination = null;
+        let tornadoContract;
 
         // Initialize
         window.addEventListener('load', async () => {
             if (typeof window.ethereum !== 'undefined') {
                 web3 = new Web3(window.ethereum);
+                tornadoContract = new web3.eth.Contract(TORNADO_ABI, TORNADO_ADDRESS);
                 
                 // Check if already connected
                 const accounts = await web3.eth.getAccounts();
@@ -386,13 +539,42 @@
                     updateConnectionStatus();
                 }
 
+                // Load stats
+                await loadStats();
+
                 // Listen for changes
                 window.ethereum.on('accountsChanged', handleAccountsChanged);
                 window.ethereum.on('chainChanged', () => window.location.reload());
+                
+                // Setup denomination selection
+                setupDenominationSelection();
             } else {
                 showAlert('error', 'MetaMask not detected. Please install MetaMask.');
             }
         });
+
+        function setupDenominationSelection() {
+            const cards = document.querySelectorAll('.denomination-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Remove previous selection
+                    cards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Select this card
+                    card.classList.add('selected');
+                    selectedDenomination = parseFloat(card.dataset.denomination);
+                    
+                    // Update deposit button
+                    const depositBtn = document.getElementById('depositBtn');
+                    const depositText = document.getElementById('depositText');
+                    
+                    if (account) {
+                        depositBtn.disabled = false;
+                        depositText.textContent = `Deposit ${selectedDenomination} S to Pool`;
+                    }
+                });
+            });
+        }
 
         async function connectWallet() {
             if (!window.ethereum) {
@@ -431,6 +613,7 @@
 
                 updateConnectionStatus();
                 showAlert('success', 'Wallet connected successfully');
+                await loadStats();
 
             } catch (error) {
                 console.error('Connection error:', error);
@@ -438,22 +621,77 @@
             }
         }
 
-        async function sendAnonymously() {
+        async function deposit() {
             if (!account) {
                 showAlert('error', 'Please connect your wallet first');
                 return;
             }
 
-            const amountValue = document.getElementById('amount').value.trim();
-            const recipientValue = document.getElementById('recipient').value.trim();
-
-            if (!amountValue || parseFloat(amountValue) <= 0) {
-                showAlert('error', 'Please enter a valid amount');
+            if (!selectedDenomination) {
+                showAlert('error', 'Please select a denomination');
                 return;
             }
 
+            const depositBtn = document.getElementById('depositBtn');
+            const depositText = document.getElementById('depositText');
+            
+            try {
+                depositBtn.disabled = true;
+                depositText.innerHTML = '<div class="loading"></div>Generating commitment...';
+
+                // Generate secret and commitment
+                const secret = web3.utils.randomHex(32);
+                const commitment = web3.utils.keccak256(secret);
+
+                depositText.innerHTML = '<div class="loading"></div>Depositing to privacy pool...';
+
+                // Deposit to contract
+                const tx = await tornadoContract.methods.deposit(commitment).send({
+                    from: account,
+                    value: web3.utils.toWei(selectedDenomination.toString(), 'ether'),
+                    gas: 300000
+                });
+
+                // Store deposit info
+                const deposits = JSON.parse(localStorage.getItem('tornadoDeposits') || '[]');
+                deposits.push({
+                    secret,
+                    commitment,
+                    denomination: selectedDenomination,
+                    txHash: tx.transactionHash,
+                    timestamp: Date.now()
+                });
+                localStorage.setItem('tornadoDeposits', JSON.stringify(deposits));
+
+                showAlert('success', `Deposit successful! ${selectedDenomination} S added to privacy pool. Secret saved for withdrawal.`);
+                await loadStats();
+
+            } catch (error) {
+                console.error('Deposit failed:', error);
+                
+                let errorMsg = 'Deposit failed';
+                if (error.code === 4001) {
+                    errorMsg = 'Transaction cancelled';
+                } else if (error.message?.includes('insufficient funds')) {
+                    errorMsg = 'Insufficient funds';
+                }
+                
+                showAlert('error', errorMsg);
+            } finally {
+                depositBtn.disabled = false;
+                depositText.textContent = `Deposit ${selectedDenomination} S to Pool`;
+            }
+        }
+
+        async function withdraw() {
+            if (!account) {
+                showAlert('error', 'Please connect your wallet first');
+                return;
+            }
+
+            const recipientValue = document.getElementById('recipient').value.trim();
             if (!recipientValue) {
-                showAlert('error', 'Please enter a recipient address');
+                showAlert('error', 'Please enter recipient address');
                 return;
             }
 
@@ -462,112 +700,88 @@
                 return;
             }
 
-            // Check network
-            try {
-                const chainId = await window.ethereum.request({method: 'eth_chainId'});
-                if (chainId !== SONIC_TESTNET_CHAIN_ID) {
-                    showAlert('error', 'Please switch to Sonic Testnet');
-                    return;
-                }
-            } catch (error) {
-                showAlert('error', 'Failed to check network');
+            // Get stored deposits
+            const deposits = JSON.parse(localStorage.getItem('tornadoDeposits') || '[]');
+            if (deposits.length === 0) {
+                showAlert('error', 'No deposits found. Please deposit first.');
                 return;
             }
 
-            const sendBtn = document.getElementById('sendBtn');
-            const sendText = document.getElementById('sendText');
+            const withdrawBtn = document.getElementById('withdrawBtn');
+            const withdrawText = document.getElementById('withdrawText');
             
             try {
-                sendBtn.disabled = true;
-                sendText.innerHTML = '<div class="loading"></div>Processing transfer...';
+                withdrawBtn.disabled = true;
+                withdrawText.innerHTML = '<div class="loading"></div>Preparing withdrawal...';
 
-                const amountWei = web3.utils.toWei(amountValue, 'ether');
-                const amount = parseFloat(amountValue);
+                // Use first available deposit (simplified)
+                const deposit = deposits[0];
+                
+                withdrawText.innerHTML = '<div class="loading"></div>Generating proof...';
+                
+                // Generate nullifier (simplified - use secret as nullifier for testnet)
+                const nullifier = web3.utils.keccak256(deposit.secret);
+                
+                // Empty merkle proof for simplified testnet version
+                const merkleProof = [];
+                
+                withdrawText.innerHTML = '<div class="loading"></div>Withdrawing from pool...';
 
-                // Multiple transfers for better privacy
-                if (amount >= 1) {
-                    const fullTransfers = Math.floor(amount);
-                    const remainder = amount - fullTransfers;
+                // Withdraw from contract
+                const tx = await tornadoContract.methods.withdraw(
+                    web3.utils.toWei(deposit.denomination.toString(), 'ether'),
+                    nullifier,
+                    recipientValue,
+                    '0x0000000000000000000000000000000000000000', // No relayer
+                    0, // No fee
+                    merkleProof
+                ).send({
+                    from: account,
+                    gas: 400000
+                });
 
-                    // Process multiple 1S transfers
-                    for (let i = 0; i < fullTransfers; i++) {
-                        sendText.innerHTML = `<div class="loading"></div>Privacy transfer ${i + 1}/${fullTransfers}...`;
-                        
-                        const txHash = await window.ethereum.request({
-                            method: 'eth_sendTransaction',
-                            params: [{
-                                from: account,
-                                to: recipientValue,
-                                value: web3.utils.toHex(web3.utils.toWei("1", "ether")),
-                                gas: web3.utils.toHex(21000)
-                            }]
-                        });
-                        
-                        console.log(`Transfer ${i + 1} successful:`, txHash);
-                        
-                        // Wait between transfers
-                        if (i < fullTransfers - 1) {
-                            sendText.innerHTML = `<div class="loading"></div>Waiting for next transfer...`;
-                            await new Promise(resolve => setTimeout(resolve, 3000));
-                        }
-                    }
+                // Remove used deposit
+                deposits.shift();
+                localStorage.setItem('tornadoDeposits', JSON.stringify(deposits));
 
-                    // Handle remainder
-                    if (remainder > 0) {
-                        sendText.innerHTML = '<div class="loading"></div>Sending remainder...';
-                        
-                        const remainderWei = web3.utils.toWei(remainder.toString(), 'ether');
-                        const remainderTx = await window.ethereum.request({
-                            method: 'eth_sendTransaction',
-                            params: [{
-                                from: account,
-                                to: recipientValue,
-                                value: web3.utils.toHex(remainderWei),
-                                gas: web3.utils.toHex(21000)
-                            }]
-                        });
-                        
-                        console.log('Remainder sent:', remainderTx);
-                    }
-
-                    showAlert('success', `Transfer Complete: ${amount} S sent anonymously using ${fullTransfers} transfer(s)${remainder > 0 ? ' + remainder' : ''}`);
-
-                } else {
-                    // Single transfer for amounts < 1S
-                    const txHash = await window.ethereum.request({
-                        method: 'eth_sendTransaction',
-                        params: [{
-                            from: account,
-                            to: recipientValue,
-                            value: web3.utils.toHex(amountWei),
-                            gas: web3.utils.toHex(21000)
-                        }]
-                    });
-                    
-                    console.log('Transfer successful:', txHash);
-                    showAlert('success', `Transfer Complete: ${amount} S sent successfully`);
-                }
-
-                // Clear form
-                document.getElementById('amount').value = '';
+                showAlert('success', `Withdrawal successful! ${deposit.denomination} S sent to ${recipientValue.slice(0,6)}...${recipientValue.slice(-4)}`);
+                
+                // Clear recipient
                 document.getElementById('recipient').value = '';
+                await loadStats();
 
             } catch (error) {
-                console.error('Transfer failed:', error);
+                console.error('Withdrawal failed:', error);
                 
-                let errorMsg = 'Transfer failed';
+                let errorMsg = 'Withdrawal failed';
                 if (error.code === 4001) {
                     errorMsg = 'Transaction cancelled';
-                } else if (error.message?.includes('insufficient funds')) {
-                    errorMsg = 'Insufficient funds';
-                } else if (error.message?.includes('gas')) {
-                    errorMsg = 'Gas estimation failed';
+                } else if (error.message?.includes('NullifierUsed')) {
+                    errorMsg = 'This deposit was already withdrawn';
+                } else if (error.message?.includes('InvalidProof')) {
+                    errorMsg = 'Invalid withdrawal proof';
                 }
                 
                 showAlert('error', errorMsg);
             } finally {
-                sendBtn.disabled = false;
-                sendText.innerHTML = 'Send Anonymously';
+                withdrawBtn.disabled = false;
+                withdrawText.textContent = 'Withdraw from Pool';
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const [anonymitySet, tvl, relayerFee] = await Promise.all([
+                    tornadoContract.methods.getAnonymitySetSize().call(),
+                    tornadoContract.methods.getTotalValueLocked().call(),
+                    tornadoContract.methods.relayerFeePercent().call()
+                ]);
+
+                document.getElementById('anonymitySet').textContent = anonymitySet.toString();
+                document.getElementById('totalValueLocked').textContent = parseFloat(web3.utils.fromWei(tvl, 'ether')).toFixed(1);
+                document.getElementById('relayerFee').textContent = (Number(relayerFee) / 100) + '%';
+            } catch (error) {
+                console.log('Failed to load stats:', error);
             }
         }
 
@@ -575,16 +789,25 @@
             const statusEl = document.getElementById('connectionStatus');
             const addressEl = document.getElementById('walletAddress');
             const connectBtn = document.getElementById('connectBtn');
+            const depositBtn = document.getElementById('depositBtn');
+            const depositText = document.getElementById('depositText');
 
             if (account) {
                 statusEl.style.display = 'flex';
                 addressEl.textContent = account.slice(0, 6) + '...' + account.slice(-4);
                 connectBtn.textContent = 'Connected';
                 connectBtn.disabled = true;
+                
+                if (selectedDenomination) {
+                    depositBtn.disabled = false;
+                    depositText.textContent = `Deposit ${selectedDenomination} S to Pool`;
+                }
             } else {
                 statusEl.style.display = 'none';
                 connectBtn.textContent = 'Connect Wallet';
                 connectBtn.disabled = false;
+                depositBtn.disabled = true;
+                depositText.textContent = 'Connect Wallet to Deposit';
             }
         }
 
@@ -592,6 +815,7 @@
             if (accounts.length > 0) {
                 account = accounts[0];
                 updateConnectionStatus();
+                loadStats();
             } else {
                 account = null;
                 updateConnectionStatus();
@@ -610,7 +834,7 @@
             if (type === 'success') {
                 setTimeout(() => {
                     alertDiv.remove();
-                }, 5000);
+                }, 6000);
             }
         }
     </script>

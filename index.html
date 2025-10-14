@@ -441,9 +441,9 @@
             <!-- Send Privately Form -->
             <div class="form-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <label for="amount">Amount</label>
+                    <label for="amount">Amount (Fixed: 1 S)</label>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <button onclick="setMaxAmount()" style="background: rgba(0, 212, 255, 0.15); border: 1.5px solid rgba(0, 212, 255, 0.3); color: #00d4ff; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(0, 212, 255, 0.25)'; this.style.borderColor='rgba(0, 212, 255, 0.5)'" onmouseout="this.style.background='rgba(0, 212, 255, 0.15)'; this.style.borderColor='rgba(0, 212, 255, 0.3)'">MAX</button>
+                        <button onclick="setFixedAmount()" style="background: rgba(0, 212, 255, 0.15); border: 1.5px solid rgba(0, 212, 255, 0.3); color: #00d4ff; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(0, 212, 255, 0.25)'; this.style.borderColor='rgba(0, 212, 255, 0.5)'" onmouseout="this.style.background='rgba(0, 212, 255, 0.15)'; this.style.borderColor='rgba(0, 212, 255, 0.3)'">SET</button>
                         <span style="color: #00d4ff; font-weight: 700; font-size: 16px; font-family: 'Inter', sans-serif;">S</span>
                     </div>
                 </div>
@@ -451,9 +451,12 @@
                     type="number" 
                     id="amount" 
                     class="amount-input"
-                    placeholder="0.00"
-                    step="0.001"
-                    min="0.001">
+                    placeholder="1.0"
+                    value="1.0"
+                    step="1"
+                    min="1"
+                    max="1"
+                    readonly>
             </div>
 
             <div class="form-group">
@@ -660,22 +663,9 @@
             }
         }
 
-        // Set max amount from wallet balance
-        async function setMaxAmount() {
-            if (!account || !web3) {
-                showAlert('error', 'Please connect your wallet first');
-                return;
-            }
-            
-            try {
-                const balance = await web3.eth.getBalance(account);
-                const balanceEth = web3.utils.fromWei(balance, 'ether');
-                // Leave some for gas fees
-                const maxAmount = Math.max(0, parseFloat(balanceEth) - 0.01);
-                document.getElementById('amount').value = maxAmount.toFixed(6);
-            } catch (error) {
-                showAlert('error', 'Failed to get balance');
-            }
+        // Set fixed amount for mixer (1 S only)
+        function setFixedAmount() {
+            document.getElementById('amount').value = "1.0";
         }
 
         // Initialize
@@ -773,8 +763,8 @@
             const amountValue = document.getElementById('amount').value.trim();
             const recipientValue = document.getElementById('recipient').value.trim();
 
-            if (!amountValue || parseFloat(amountValue) <= 0) {
-                showAlert('error', 'Please enter a valid amount');
+            if (!amountValue || parseFloat(amountValue) !== 1.0) {
+                showAlert('error', 'Amount must be exactly 1 S for privacy mixer');
                 return;
             }
 
@@ -874,7 +864,7 @@
                     console.log(`Step 1: Depositing ${amountValue} S to privacy mixer...`);
                     sendText.innerHTML = '<div class="loading"></div>🔒 Depositing to mixer...';
                     
-                    // Step 1: Deposit to privacy pool using contract method
+                    // Step 1: Deposit exactly 1 S to privacy pool using contract method
                     const commitment = web3.utils.keccak256(secret.toString() + nullifier.toString());
                     
                     const depositData = contract.methods.deposit(commitment).encodeABI();
@@ -883,7 +873,7 @@
                         params: [{
                             from: account,
                             to: PRIVACY_POOL_ADDRESS,
-                            value: web3.utils.toHex(web3.utils.toWei("1", "ether")), // Fixed 1 S for contract
+                            value: web3.utils.toHex(web3.utils.toWei("1", "ether")), // Always 1 S - contract requirement
                             data: depositData,
                             gas: web3.utils.toHex(200000)
                         }]
@@ -928,14 +918,14 @@
                             // Wait a bit more for dramatic effect
                             setTimeout(async () => {
                                 try {
-                                    // Relayer submits withdrawal from different account
+                                    // Relayer submits withdrawal - MUST match contract expectations
                                     const withdrawData = contract.methods.withdraw(
                                         proofArray,
                                         merkleRoot,
                                         web3.utils.keccak256(nullifier.toString()),
                                         recipientValue,
-                                        selectedRelayer, // Random relayer gets fee
-                                        web3.utils.toWei("0.02", "ether") // Relayer fee
+                                        "0x0000000000000000000000000000000000000000", // No relayer (zero address)
+                                        "0" // No fee - recipient gets full 1 S
                                     ).encodeABI();
                                     
                                     // This withdrawal comes from YOU but looks like relayer service
@@ -950,7 +940,7 @@
                                     });
                                     
                                     console.log('✅ Anonymous relayer withdrawal successful:', withdrawTxHash);
-                                    showAlert('success', `🎉 ANONYMOUS TRANSFER COMPLETE!\n💰 0.98 S → ${recipientValue.slice(0,8)}...\n🤖 Via relayer: ${selectedRelayer.slice(0,8)}...\n💸 0.02 S relayer fee\n🔗 TX: ${withdrawTxHash.slice(0, 10)}...\n\n🔒 Transaction link broken!`);
+                                    showAlert('success', `🎉 ANONYMOUS TRANSFER COMPLETE!\n💰 1.0 S → ${recipientValue.slice(0,8)}...\n🤖 Via relayer: ${selectedRelayer.slice(0,8)}...\n🔗 TX: ${withdrawTxHash.slice(0, 10)}...\n\n🔒 Transaction link broken!`);
                                     
                                     // Remove processed note
                                     localStorage.removeItem(noteKey);

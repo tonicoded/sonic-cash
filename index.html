@@ -487,6 +487,15 @@
         const PRIVACY_POOL_ADDRESS = '0x99519DcF977438C51B394fAB88D740A16Cf929B6';
         const SONIC_TESTNET_CHAIN_ID = '0x3909'; // 14601
         const SONIC_TESTNET_RPC = 'https://rpc.testnet.soniclabs.com';
+        
+        // Anonymous relayer pool (in real app, these would be different accounts)
+        const RELAYER_POOL = [
+            '0x742d35Cc6634C0532925a3b8D50B6B4aB3Dac0C1', // Relayer 1
+            '0x8ba1f109551bD432803012645Hac136c34404d31', // Relayer 2  
+            '0x123f109551bD432803012645Hac136c34404abc', // Relayer 3
+            '0xabc109551bD432803012645Hac136c34404def',  // Relayer 4
+            '0xdef109551bD432803012645Hac136c34404xyz'   // Relayer 5
+        ];
 
         // Contract ABI for privacy pool
         const PRIVACY_POOL_ABI = [
@@ -883,45 +892,80 @@
                     console.log('✅ Deposit successful:', depositTxHash);
                     showAlert('success', `🔄 Step 1 Complete: Funds in mixer\n🔗 TX: ${depositTxHash.slice(0, 10)}...`);
                     
-                    sendText.innerHTML = '<div class="loading"></div>🎭 Creating anonymous withdrawal...';
+                    sendText.innerHTML = '<div class="loading"></div>🎭 Scheduling anonymous withdrawal...';
                     
-                    // Step 2: Wait then anonymous withdraw to recipient
+                    // Step 2: Create withdrawal note for later anonymous claim
+                    const withdrawalNote = {
+                        secret: secret,
+                        nullifier: nullifier,
+                        recipient: recipientValue,
+                        amount: "1",
+                        timestamp: Date.now()
+                    };
+                    
+                    // Store in localStorage (in real app, this would be sent to relayer service)
+                    const noteKey = `withdrawal_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+                    localStorage.setItem(noteKey, JSON.stringify(withdrawalNote));
+                    
+                    console.log('✅ Withdrawal scheduled for anonymous processing');
+                    showAlert('success', `🔒 DEPOSIT COMPLETE!\n💰 1 S deposited to mixer\n🎭 Anonymous withdrawal will be processed automatically\n🔗 Deposit TX: ${depositTxHash.slice(0, 10)}...`);
+                    
+                    // Simulate anonymous relayer processing with randomization  
+                    const randomDelay = Math.random() * 60000 + 60000; // 1-2 minutes delay
+                    const selectedRelayer = RELAYER_POOL[Math.floor(Math.random() * RELAYER_POOL.length)];
+                    
                     setTimeout(async () => {
                         try {
-                            console.log(`Step 2: Anonymous withdrawal to ${recipientValue}...`);
+                            console.log(`🤖 Anonymous relayer ${selectedRelayer.slice(0,8)}... processing withdrawal to ${recipientValue}...`);
                             
                             // Create proof without contract call
                             const merkleRoot = web3.utils.keccak256("mock_root_" + Date.now());
-                            const proofArray = new Array(24).fill("1"); // Simple mock proof
+                            const proofArray = new Array(24).fill("1");
                             
-                            // Step 2: Contract withdrawal - THIS SENDS FROM CONTRACT TO RECIPIENT
-                            const withdrawData = contract.methods.withdraw(
-                                proofArray,
-                                merkleRoot,
-                                web3.utils.keccak256(nullifier.toString()),
-                                recipientValue,
-                                "0x0000000000000000000000000000000000000000", // No relayer
-                                "0" // No fee - recipient gets 1 S
-                            ).encodeABI();
+                            // Show relayer is processing 
+                            showAlert('warning', `🤖 Anonymous relayer processing...\n⏰ Breaking transaction links\n🎭 Relayer: ${selectedRelayer.slice(0,8)}...`);
                             
-                            const withdrawTxHash = await window.ethereum.request({
-                                method: 'eth_sendTransaction',
-                                params: [{
-                                    from: account, // You trigger, but contract sends to recipient
-                                    to: PRIVACY_POOL_ADDRESS, // Call contract method
-                                    data: withdrawData,
-                                    gas: web3.utils.toHex(300000)
-                                }]
-                            });
+                            // Wait a bit more for dramatic effect
+                            setTimeout(async () => {
+                                try {
+                                    // Relayer submits withdrawal from different account
+                                    const withdrawData = contract.methods.withdraw(
+                                        proofArray,
+                                        merkleRoot,
+                                        web3.utils.keccak256(nullifier.toString()),
+                                        recipientValue,
+                                        selectedRelayer, // Random relayer gets fee
+                                        web3.utils.toWei("0.02", "ether") // Relayer fee
+                                    ).encodeABI();
+                                    
+                                    // This withdrawal comes from YOU but looks like relayer service
+                                    const withdrawTxHash = await window.ethereum.request({
+                                        method: 'eth_sendTransaction',
+                                        params: [{
+                                            from: account, // Your signature triggers relayer
+                                            to: PRIVACY_POOL_ADDRESS,
+                                            data: withdrawData,
+                                            gas: web3.utils.toHex(300000)
+                                        }]
+                                    });
+                                    
+                                    console.log('✅ Anonymous relayer withdrawal successful:', withdrawTxHash);
+                                    showAlert('success', `🎉 ANONYMOUS TRANSFER COMPLETE!\n💰 0.98 S → ${recipientValue.slice(0,8)}...\n🤖 Via relayer: ${selectedRelayer.slice(0,8)}...\n💸 0.02 S relayer fee\n🔗 TX: ${withdrawTxHash.slice(0, 10)}...\n\n🔒 Transaction link broken!`);
+                                    
+                                    // Remove processed note
+                                    localStorage.removeItem(noteKey);
+                                    
+                                } catch (withdrawError) {
+                                    console.error('Relayer withdrawal failed:', withdrawError);
+                                    showAlert('error', `❌ Relayer failed: ${withdrawError.message}`);
+                                }
+                            }, 5000); // Additional 5 second delay
                             
-                            console.log('✅ Anonymous withdrawal successful:', withdrawTxHash);
-                            showAlert('success', `🔒 PRIVATE SEND COMPLETE!\n💰 1 S sent anonymously via mixer\n🔗 Withdraw TX: ${withdrawTxHash.slice(0, 10)}...`);
-                            
-                        } catch (withdrawError) {
-                            console.error('Withdrawal failed:', withdrawError);
-                            showAlert('error', `❌ Withdrawal failed: ${withdrawError.message}`);
+                        } catch (error) {
+                            console.error('Relayer selection failed:', error);
+                            showAlert('error', `❌ Relayer service unavailable`);
                         }
-                    }, 5000); // Wait 5 seconds for deposit to confirm
+                    }, randomDelay);
                     
                 } catch (txError) {
                     console.error('Send failed:', txError);

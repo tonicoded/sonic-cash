@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Sonic Privacy Send</title>
-    <!-- Force Vercel redeploy -->
+    <title>Sonic Privacy Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <style>
         * {
@@ -15,10 +14,35 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
+        :root {
+            --bg-primary: linear-gradient(135deg, #0a0d1f 0%, #1a1d3a 50%, #0f1229 100%);
+            --bg-card: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            --border-primary: rgba(0, 212, 255, 0.25);
+            --text-primary: #ffffff;
+            --text-secondary: #a0b3cc;
+            --accent-blue: #00d4ff;
+            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066cc 100%);
+            --success-bg: rgba(34, 197, 94, 0.12);
+            --success-border: rgba(34, 197, 94, 0.3);
+            --success-text: #4ade80;
+            --error-bg: rgba(239, 68, 68, 0.12);
+            --error-border: rgba(239, 68, 68, 0.3);
+            --error-text: #f87171;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            --bg-card: linear-gradient(145deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+            --border-primary: rgba(0, 212, 255, 0.3);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-blue: #0284c7;
+        }
+        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0a0d1f 0%, #1a1d3a 50%, #0f1229 100%);
-            color: #ffffff;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -26,6 +50,7 @@
             padding: 20px;
             overflow-x: hidden;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         body::before {
@@ -41,10 +66,12 @@
                 radial-gradient(circle at 40% 80%, rgba(0, 150, 200, 0.03) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
         }
 
         .container {
-            max-width: 520px;
+            max-width: 900px;
             width: 100%;
             position: relative;
             z-index: 1;
@@ -54,31 +81,76 @@
         .header {
             text-align: center;
             margin-bottom: 48px;
+            position: relative;
         }
 
         .header h1 {
-            font-size: 3.2rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066cc 100%);
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 12px;
             letter-spacing: -0.02em;
             line-height: 1.1;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '✨';
+            position: absolute;
+            top: -10px;
+            right: -20px;
+            font-size: 1.5rem;
+            animation: sparkle 2s ease-in-out infinite;
         }
 
         .subtitle {
-            color: #a0b3cc;
-            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
             font-weight: 500;
             opacity: 0.9;
             letter-spacing: 0.5px;
         }
 
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 50px;
+            width: 60px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle::before {
+            content: '🌙';
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .theme-toggle::before {
+            content: '☀️';
+            transform: translateX(30px);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 32px;
+            align-items: start;
+        }
+
         .card {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border: 1px solid rgba(0, 212, 255, 0.25);
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
             border-radius: 24px;
             padding: 40px;
             box-shadow: 
@@ -89,31 +161,11 @@
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 32px;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1.5px solid rgba(0, 212, 255, 0.2);
-            border-radius: 16px;
-            margin-bottom: 32px;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        .status-value {
-            color: #00d4ff;
-            font-family: 'Inter', ui-monospace, SFMono-Regular, monospace;
-            font-weight: 600;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 16px;
             margin-bottom: 32px;
         }
@@ -125,60 +177,149 @@
             padding: 20px;
             text-align: center;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-primary);
         }
 
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #00d4ff;
+            color: var(--accent-blue);
             margin-bottom: 8px;
+            font-family: ui-monospace, monospace;
         }
 
         .stat-label {
-            color: #a0b3cc;
+            color: var(--text-secondary);
             font-size: 13px;
             font-weight: 500;
         }
 
-        .form-group {
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid var(--border-primary);
+            border-radius: 16px;
             margin-bottom: 32px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-value {
+            color: var(--accent-blue);
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+        }
+
+        .privacy-score {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .privacy-score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-blue) 0deg, var(--accent-blue) var(--score-deg, 180deg), rgba(255,255,255,0.1) var(--score-deg, 180deg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .privacy-score-circle::before {
+            content: '';
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            background: var(--bg-card);
+            border-radius: 50%;
+        }
+
+        .privacy-score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 14px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px;
+            border-radius: 16px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 12px;
-            color: #ffffff;
+            color: var(--text-primary);
             font-weight: 600;
             font-size: 15px;
             letter-spacing: 0.3px;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 18px 20px;
             background: rgba(255, 255, 255, 0.03);
             border: 1.5px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            color: #ffffff;
+            color: var(--text-primary);
             font-size: 16px;
-            font-family: 'Inter', ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-family: 'Inter', monospace;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
-            -webkit-appearance: none;
-            -webkit-border-radius: 16px;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: rgba(0, 212, 255, 0.6);
+            border-color: var(--border-primary);
             background: rgba(255, 255, 255, 0.06);
-            box-shadow: 
-                0 0 0 3px rgba(0, 212, 255, 0.15),
-                0 8px 24px rgba(0, 212, 255, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
         }
 
         .amount-input {
@@ -188,9 +329,57 @@
             letter-spacing: 0.5px;
         }
 
+        .batch-recipients {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .recipient-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 12px;
+        }
+
+        .remove-recipient {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .remove-recipient:hover {
+            background: var(--error-border);
+        }
+
+        .add-recipient {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .add-recipient:hover {
+            background: var(--success-border);
+        }
+
         .btn {
             width: 100%;
-            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066cc 100%);
+            background: var(--accent-gradient);
             color: white;
             border: none;
             padding: 20px 24px;
@@ -206,15 +395,30 @@
             font-family: 'Inter', sans-serif;
             letter-spacing: 0.3px;
             margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #00b8e6 0%, #0088ff 50%, #0055bb 100%);
             transform: translateY(-2px);
             box-shadow: 
                 0 16px 48px rgba(0, 212, 255, 0.4),
-                0 8px 24px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
         .btn:disabled {
@@ -228,14 +432,8 @@
         .btn-secondary {
             background: rgba(255, 255, 255, 0.05);
             border: 1.5px solid rgba(255, 255, 255, 0.15);
-            color: #ffffff;
+            color: var(--text-primary);
             backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
         }
 
         .alert {
@@ -250,15 +448,15 @@
         }
 
         .alert-success {
-            background: rgba(34, 197, 94, 0.12);
-            border-color: rgba(34, 197, 94, 0.3);
-            color: #4ade80;
+            background: var(--success-bg);
+            border-color: var(--success-border);
+            color: var(--success-text);
         }
 
         .alert-error {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #f87171;
+            background: var(--error-bg);
+            border-color: var(--error-border);
+            color: var(--error-text);
         }
 
         .loading {
@@ -267,10 +465,111 @@
             height: 18px;
             border: 2.5px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            border-top-color: #00d4ff;
+            border-top-color: var(--accent-blue);
             border-right-color: #0099ff;
             animation: spin 1s linear infinite;
             margin-right: 10px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .transaction-history {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .tx-item {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent-blue);
+            transition: all 0.3s ease;
+        }
+
+        .tx-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(4px);
+        }
+
+        .tx-type {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tx-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: ui-monospace, monospace;
+        }
+
+        .tx-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .privacy-tips {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1.5px solid rgba(0, 212, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .privacy-tips h4 {
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .privacy-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .privacy-tips li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .privacy-tips li::before {
+            content: '🔒';
+            position: absolute;
+            left: 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
         }
 
         @keyframes spin {
@@ -278,91 +577,71 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 48px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .footer a {
-            color: #00d4ff;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .privacy-info {
-            background: rgba(0, 212, 255, 0.05);
-            border: 1.5px solid rgba(0, 212, 255, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 32px;
-            color: #a0b3cc;
-            font-size: 14px;
-            line-height: 1.5;
-            backdrop-filter: blur(10px);
-        }
-
-        .privacy-info strong {
-            color: #00d4ff;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
+            body { padding: 10px; }
+            .container { max-width: 100%; }
+            .main-grid { 
+                grid-template-columns: 1fr; 
+                gap: 24px; 
             }
-            
-            .container {
-                max-width: 100%;
-                padding: 0;
-            }
-            
-            .header h1 {
-                font-size: 2.4rem;
-            }
-            
-            .card {
-                padding: 24px 20px;
-                border-radius: 20px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+            .header h1 { font-size: 2.5rem; }
+            .card { padding: 24px 20px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .recipient-row { grid-template-columns: 1fr auto; gap: 8px; }
+            .recipient-row input:first-child { grid-column: 1 / -2; margin-bottom: 8px; }
+        }
+
+        /* Sound Effect Styles */
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sound-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
+    <div class="theme-toggle" onclick="toggleTheme()"></div>
+    <div class="sound-toggle" onclick="toggleSound()" title="Toggle Sound Effects">🔊</div>
+    
     <div class="container">
         <div class="header">
-            <h1>Sonic Privacy Send</h1>
-            <p class="subtitle">Anonymous Token Transfers</p>
+            <h1>Sonic Privacy Pro</h1>
+            <p class="subtitle">Advanced Anonymous Transfers with Privacy Scoring</p>
         </div>
 
-        <!-- Stats -->
+        <!-- Enhanced Stats -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="totalTransfers">0</div>
@@ -373,59 +652,143 @@
                 <div class="stat-label">Volume (S)</div>
             </div>
             <div class="stat-card">
+                <div class="stat-value" id="batchTransfers">0</div>
+                <div class="stat-label">Batch Transfers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="delayedTransfers">0</div>
+                <div class="stat-label">Delayed Transfers</div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-value" id="privacyFee">0.1%</div>
                 <div class="stat-label">Privacy Fee</div>
             </div>
         </div>
 
-        <div class="card">
-            <!-- Connection Status -->
-            <div class="status" id="connectionStatus" style="display: none;">
-                <span>Connected</span>
-                <span class="status-value" id="walletAddress">Not connected</span>
+        <div class="main-grid">
+            <div class="card">
+                <!-- Connection Status -->
+                <div class="status" id="connectionStatus" style="display: none;">
+                    <span>Connected</span>
+                    <span class="status-value" id="walletAddress">Not connected</span>
+                </div>
+
+                <!-- Privacy Score -->
+                <div class="privacy-score" id="privacyScoreContainer" style="display: none;">
+                    <div class="privacy-score-circle" id="privacyScoreCircle">
+                        <span class="privacy-score-value" id="privacyScoreValue">0</span>
+                    </div>
+                    <div>
+                        <h4>Privacy Score</h4>
+                        <p class="text-secondary">Based on your transaction patterns</p>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div id="alerts"></div>
+
+                <!-- Tab Navigation -->
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('instant')">Instant Send</button>
+                    <button class="tab-btn" onclick="switchTab('delayed')">Delayed Send</button>
+                    <button class="tab-btn" onclick="switchTab('batch')">Batch Send</button>
+                </div>
+
+                <!-- Instant Send Tab -->
+                <div id="instant-tab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" class="amount-input" placeholder="0.00" step="0.001" min="0.001">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient">Recipient Address</label>
+                        <input type="text" id="recipient" placeholder="0x...">
+                    </div>
+
+                    <button class="btn" id="sendBtn" onclick="sendAnonymously()">
+                        <span id="sendText">Send Anonymously</span>
+                    </button>
+                </div>
+
+                <!-- Delayed Send Tab -->
+                <div id="delayed-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="delayAmount">Amount</label>
+                        <input type="number" id="delayAmount" class="amount-input" placeholder="0.00" step="0.001" min="0.001">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayRecipient">Recipient Address</label>
+                        <input type="text" id="delayRecipient" placeholder="0x...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayMinutes">Delay (minutes)</label>
+                        <select id="delayMinutes">
+                            <option value="5">5 minutes (Quick)</option>
+                            <option value="30">30 minutes (Standard)</option>
+                            <option value="60">1 hour (Good)</option>
+                            <option value="180">3 hours (Better)</option>
+                            <option value="720">12 hours (Best)</option>
+                            <option value="1440">24 hours (Maximum)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" id="delayedSendBtn" onclick="sendWithDelay()">
+                        <span id="delayedSendText">Schedule Anonymous Transfer</span>
+                    </button>
+                </div>
+
+                <!-- Batch Send Tab -->
+                <div id="batch-tab" class="tab-content">
+                    <div class="form-group">
+                        <label>Recipients & Amounts</label>
+                        <div class="batch-recipients" id="batchRecipients">
+                            <div class="recipient-row">
+                                <input type="text" placeholder="Recipient address" class="batch-address">
+                                <input type="number" placeholder="Amount" step="0.001" min="0.001" class="batch-amount">
+                                <button type="button" class="remove-recipient" onclick="removeRecipient(this)">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="add-recipient" onclick="addRecipient()">+ Add Recipient</button>
+                    </div>
+
+                    <button class="btn" id="batchSendBtn" onclick="batchTransfer()">
+                        <span id="batchSendText">Send Batch Transfer</span>
+                    </button>
+                </div>
+
+                <button class="btn btn-secondary" id="connectBtn" onclick="connectWallet()">
+                    Connect Wallet
+                </button>
             </div>
 
-            <!-- Alerts -->
-            <div id="alerts"></div>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Transaction History -->
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; color: var(--accent-blue);">Recent Transfers</h3>
+                    <div class="transaction-history" id="transactionHistory">
+                        <p style="text-align: center; color: var(--text-secondary);">No transfers yet</p>
+                    </div>
+                </div>
 
-            <!-- Privacy Info -->
-            <div class="privacy-info">
-                <strong>How it works:</strong> Your transaction goes through our privacy pool contract, breaking the direct link between sender and recipient. All transfers are anonymous and untraceable.
+                <!-- Privacy Tips -->
+                <div class="privacy-tips">
+                    <h4>Privacy Tips</h4>
+                    <ul>
+                        <li>Use delayed transfers for better anonymity</li>
+                        <li>Vary your transfer amounts and timing</li>
+                        <li>Batch transfers provide additional privacy</li>
+                        <li>Higher privacy scores indicate better anonymity</li>
+                    </ul>
+                </div>
             </div>
-
-            <!-- Amount Input -->
-            <div class="form-group">
-                <label for="amount">Amount</label>
-                <input 
-                    type="number" 
-                    id="amount" 
-                    class="amount-input"
-                    placeholder="0.00"
-                    step="0.001"
-                    min="0.001">
-            </div>
-
-            <!-- Recipient Address -->
-            <div class="form-group">
-                <label for="recipient">Recipient Address</label>
-                <input 
-                    type="text" 
-                    id="recipient" 
-                    placeholder="0x...">
-            </div>
-
-            <!-- Send Button -->
-            <button class="btn" id="sendBtn" onclick="sendAnonymously()">
-                <span id="sendText">Send Anonymously</span>
-            </button>
-
-            <button class="btn btn-secondary" id="connectBtn" onclick="connectWallet()">
-                Connect Wallet
-            </button>
         </div>
 
         <div class="footer">
-            Privacy-first protocol built for <a href="https://soniclabs.org" target="_blank">Sonic</a>
+            Next-level privacy protocol built for <a href="https://soniclabs.org" target="_blank">Sonic</a>
         </div>
     </div>
 
@@ -433,13 +796,42 @@
         // Configuration
         const SONIC_TESTNET_CHAIN_ID = '0x3909'; // 14601
         const SONIC_TESTNET_RPC = 'https://rpc.testnet.soniclabs.com';
-        const PRIVACY_SEND_ADDRESS = '0x82dfEC2D896B0267bCb2c94D8A557C8e4064FB46';
+        const PRIVACY_PRO_ADDRESS = '0x8D8143Af697B14aCe736c072940eED77ddB15EaE';
+
+        // Sound effects
+        let soundEnabled = true;
+        const sounds = {
+            success: () => playTone(800, 200),
+            error: () => playTone(200, 300),
+            click: () => playTone(400, 100),
+            connect: () => playChord([400, 500, 600], 300)
+        };
 
         // Contract ABI
-        const PRIVACY_SEND_ABI = [
+        const PRIVACY_PRO_ABI = [
             {
                 "inputs": [{"type": "address", "name": "recipient"}],
                 "name": "sendAnonymously",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"type": "address", "name": "recipient"},
+                    {"type": "uint256", "name": "delayMinutes"}
+                ],
+                "name": "sendWithDelay",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"type": "address[]", "name": "recipients"},
+                    {"type": "uint256[]", "name": "amounts"}
+                ],
+                "name": "batchTransfer",
                 "outputs": [],
                 "stateMutability": "payable",
                 "type": "function"
@@ -451,7 +843,23 @@
                     {"type": "uint256", "name": "_totalTransfers"},
                     {"type": "uint256", "name": "_totalVolume"},
                     {"type": "uint256", "name": "_contractBalance"},
-                    {"type": "uint256", "name": "_privacyFee"}
+                    {"type": "uint256", "name": "_privacyFee"},
+                    {"type": "uint256", "name": "_totalBatchTransfers"},
+                    {"type": "uint256", "name": "_totalDelayedTransfers"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [{"type": "address", "name": "user"}],
+                "name": "getUserPrivacyMetrics",
+                "outputs": [
+                    {"type": "uint256", "name": "_privacyScore"},
+                    {"type": "uint256", "name": "_totalSent"},
+                    {"type": "uint256", "name": "_totalReceived"},
+                    {"type": "uint256", "name": "_transferFrequency"},
+                    {"type": "uint256", "name": "_averageAmount"},
+                    {"type": "uint256", "name": "_lastTransferTime"}
                 ],
                 "stateMutability": "view",
                 "type": "function"
@@ -460,23 +868,26 @@
 
         let web3;
         let account;
-        let privacySendContract;
+        let privacyProContract;
+        let transactionHistory = [];
 
         // Initialize
         window.addEventListener('load', async () => {
             if (typeof window.ethereum !== 'undefined') {
                 web3 = new Web3(window.ethereum);
-                privacySendContract = new web3.eth.Contract(PRIVACY_SEND_ABI, PRIVACY_SEND_ADDRESS);
+                privacyProContract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
                 
                 // Check if already connected
                 const accounts = await web3.eth.getAccounts();
                 if (accounts.length > 0) {
                     account = accounts[0];
                     updateConnectionStatus();
+                    await loadUserPrivacyMetrics();
                 }
 
                 // Load stats
                 await loadStats();
+                loadTransactionHistory();
 
                 // Listen for changes
                 window.ethereum.on('accountsChanged', handleAccountsChanged);
@@ -485,6 +896,105 @@
                 showAlert('error', 'MetaMask not detected. Please install MetaMask.');
             }
         });
+
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            playSound('click');
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        // Sound Management
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const toggle = document.querySelector('.sound-toggle');
+            toggle.textContent = soundEnabled ? '🔊' : '🔇';
+            localStorage.setItem('soundEnabled', soundEnabled);
+            if (soundEnabled) playSound('click');
+        }
+
+        function playSound(type) {
+            if (!soundEnabled || !sounds[type]) return;
+            try {
+                sounds[type]();
+            } catch (e) {
+                console.log('Sound playback failed:', e);
+            }
+        }
+
+        function playTone(frequency, duration) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+        }
+
+        function playChord(frequencies, duration) {
+            frequencies.forEach((freq, i) => {
+                setTimeout(() => playTone(freq, duration), i * 50);
+            });
+        }
+
+        // Load saved sound setting
+        const savedSound = localStorage.getItem('soundEnabled');
+        if (savedSound !== null) {
+            soundEnabled = savedSound === 'true';
+            document.querySelector('.sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        // Tab Management
+        function switchTab(tabName) {
+            playSound('click');
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        }
+
+        // Batch Transfer Management
+        function addRecipient() {
+            playSound('click');
+            const container = document.getElementById('batchRecipients');
+            const newRow = document.createElement('div');
+            newRow.className = 'recipient-row';
+            newRow.innerHTML = `
+                <input type="text" placeholder="Recipient address" class="batch-address">
+                <input type="number" placeholder="Amount" step="0.001" min="0.001" class="batch-amount">
+                <button type="button" class="remove-recipient" onclick="removeRecipient(this)">×</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        function removeRecipient(button) {
+            playSound('click');
+            button.parentElement.remove();
+        }
 
         async function connectWallet() {
             if (!window.ethereum) {
@@ -522,12 +1032,15 @@
                 }
 
                 updateConnectionStatus();
+                await loadUserPrivacyMetrics();
                 showAlert('success', 'Wallet connected successfully');
+                playSound('connect');
                 await loadStats();
 
             } catch (error) {
                 console.error('Connection error:', error);
                 showAlert('error', 'Failed to connect: ' + error.message);
+                playSound('error');
             }
         }
 
@@ -545,25 +1058,8 @@
                 return;
             }
 
-            if (!recipientValue) {
-                showAlert('error', 'Please enter a recipient address');
-                return;
-            }
-
-            if (!web3.utils.isAddress(recipientValue)) {
-                showAlert('error', 'Invalid recipient address');
-                return;
-            }
-
-            // Check network
-            try {
-                const chainId = await window.ethereum.request({method: 'eth_chainId'});
-                if (chainId !== SONIC_TESTNET_CHAIN_ID) {
-                    showAlert('error', 'Please switch to Sonic Testnet');
-                    return;
-                }
-            } catch (error) {
-                showAlert('error', 'Failed to check network');
+            if (!recipientValue || !web3.utils.isAddress(recipientValue)) {
+                showAlert('error', 'Please enter a valid recipient address');
                 return;
             }
 
@@ -576,22 +1072,33 @@
 
                 const amountWei = web3.utils.toWei(amountValue, 'ether');
 
-                // Send through privacy contract
-                const tx = await privacySendContract.methods.sendAnonymously(recipientValue).send({
+                const tx = await privacyProContract.methods.sendAnonymously(recipientValue).send({
                     from: account,
                     value: amountWei,
                     gas: 300000
                 });
 
                 console.log('Anonymous transfer successful:', tx.transactionHash);
-                showAlert('success', `Transfer Complete: ${amountValue} S sent anonymously to ${recipientValue.slice(0,6)}...${recipientValue.slice(-4)}`);
+                
+                // Add to transaction history
+                addTransactionToHistory({
+                    type: 'Instant Send',
+                    amount: amountValue,
+                    recipient: recipientValue,
+                    hash: tx.transactionHash,
+                    timestamp: Date.now()
+                });
+
+                showAlert('success', `Transfer Complete: ${amountValue} S sent anonymously`);
+                playSound('success');
 
                 // Clear form
                 document.getElementById('amount').value = '';
                 document.getElementById('recipient').value = '';
                 
-                // Update stats
+                // Update stats and privacy metrics
                 await loadStats();
+                await loadUserPrivacyMetrics();
 
             } catch (error) {
                 console.error('Transfer failed:', error);
@@ -601,56 +1108,265 @@
                     errorMsg = 'Transaction cancelled';
                 } else if (error.message?.includes('insufficient funds')) {
                     errorMsg = 'Insufficient funds';
-                } else if (error.message?.includes('gas')) {
-                    errorMsg = 'Gas estimation failed';
                 }
                 
                 showAlert('error', errorMsg);
+                playSound('error');
             } finally {
                 sendBtn.disabled = false;
                 sendText.innerHTML = 'Send Anonymously';
             }
         }
 
+        async function sendWithDelay() {
+            if (!account) {
+                showAlert('error', 'Please connect your wallet first');
+                return;
+            }
+
+            const amountValue = document.getElementById('delayAmount').value.trim();
+            const recipientValue = document.getElementById('delayRecipient').value.trim();
+            const delayMinutes = document.getElementById('delayMinutes').value;
+
+            if (!amountValue || parseFloat(amountValue) <= 0) {
+                showAlert('error', 'Please enter a valid amount');
+                return;
+            }
+
+            if (!recipientValue || !web3.utils.isAddress(recipientValue)) {
+                showAlert('error', 'Please enter a valid recipient address');
+                return;
+            }
+
+            const sendBtn = document.getElementById('delayedSendBtn');
+            const sendText = document.getElementById('delayedSendText');
+            
+            try {
+                sendBtn.disabled = true;
+                sendText.innerHTML = '<div class="loading"></div>Scheduling transfer...';
+
+                const amountWei = web3.utils.toWei(amountValue, 'ether');
+
+                const tx = await privacyProContract.methods.sendWithDelay(recipientValue, delayMinutes).send({
+                    from: account,
+                    value: amountWei,
+                    gas: 400000
+                });
+
+                console.log('Delayed transfer scheduled:', tx.transactionHash);
+                
+                addTransactionToHistory({
+                    type: 'Delayed Send',
+                    amount: amountValue,
+                    recipient: recipientValue,
+                    hash: tx.transactionHash,
+                    timestamp: Date.now(),
+                    delay: delayMinutes
+                });
+
+                showAlert('success', `Delayed transfer scheduled: ${amountValue} S will be sent in ${delayMinutes} minutes`);
+                playSound('success');
+
+                // Clear form
+                document.getElementById('delayAmount').value = '';
+                document.getElementById('delayRecipient').value = '';
+                
+                await loadStats();
+                await loadUserPrivacyMetrics();
+
+            } catch (error) {
+                console.error('Delayed transfer failed:', error);
+                showAlert('error', 'Delayed transfer failed');
+                playSound('error');
+            } finally {
+                sendBtn.disabled = false;
+                sendText.innerHTML = 'Schedule Anonymous Transfer';
+            }
+        }
+
+        async function batchTransfer() {
+            if (!account) {
+                showAlert('error', 'Please connect your wallet first');
+                return;
+            }
+
+            const rows = document.querySelectorAll('.recipient-row');
+            const recipients = [];
+            const amounts = [];
+            let totalAmount = 0;
+
+            for (let row of rows) {
+                const address = row.querySelector('.batch-address').value.trim();
+                const amount = row.querySelector('.batch-amount').value.trim();
+                
+                if (!address || !amount) continue;
+                
+                if (!web3.utils.isAddress(address)) {
+                    showAlert('error', 'Invalid recipient address: ' + address);
+                    return;
+                }
+                
+                const amountWei = web3.utils.toWei(amount, 'ether');
+                recipients.push(address);
+                amounts.push(amountWei);
+                totalAmount += parseFloat(amount);
+            }
+
+            if (recipients.length === 0) {
+                showAlert('error', 'Please add at least one recipient');
+                return;
+            }
+
+            const sendBtn = document.getElementById('batchSendBtn');
+            const sendText = document.getElementById('batchSendText');
+            
+            try {
+                sendBtn.disabled = true;
+                sendText.innerHTML = '<div class="loading"></div>Sending batch transfer...';
+
+                const totalAmountWei = web3.utils.toWei(totalAmount.toString(), 'ether');
+                const fee = totalAmountWei * BigInt(10) / BigInt(10000); // 0.1% fee
+                const totalWithFee = totalAmountWei + fee;
+
+                const tx = await privacyProContract.methods.batchTransfer(recipients, amounts).send({
+                    from: account,
+                    value: totalWithFee.toString(),
+                    gas: 500000
+                });
+
+                console.log('Batch transfer successful:', tx.transactionHash);
+                
+                addTransactionToHistory({
+                    type: 'Batch Send',
+                    amount: totalAmount,
+                    recipients: recipients.length,
+                    hash: tx.transactionHash,
+                    timestamp: Date.now()
+                });
+
+                showAlert('success', `Batch transfer complete: ${totalAmount} S sent to ${recipients.length} recipients`);
+                playSound('success');
+
+                // Clear form
+                document.getElementById('batchRecipients').innerHTML = `
+                    <div class="recipient-row">
+                        <input type="text" placeholder="Recipient address" class="batch-address">
+                        <input type="number" placeholder="Amount" step="0.001" min="0.001" class="batch-amount">
+                        <button type="button" class="remove-recipient" onclick="removeRecipient(this)">×</button>
+                    </div>
+                `;
+                
+                await loadStats();
+                await loadUserPrivacyMetrics();
+
+            } catch (error) {
+                console.error('Batch transfer failed:', error);
+                showAlert('error', 'Batch transfer failed');
+                playSound('error');
+            } finally {
+                sendBtn.disabled = false;
+                sendText.innerHTML = 'Send Batch Transfer';
+            }
+        }
+
         async function loadStats() {
             try {
-                console.log('Loading stats from contract:', PRIVACY_SEND_ADDRESS);
-                console.log('Contract instance:', privacySendContract);
+                const result = await privacyProContract.methods.getPoolStats().call();
                 
-                const result = await privacySendContract.methods.getPoolStats().call();
-                console.log('Raw result:', result);
-                
-                // Handle different result formats
-                let totalTransfers, totalVolume, contractBalance, privacyFee;
+                let totalTransfers, totalVolume, contractBalance, privacyFee, batchTransfers, delayedTransfers;
                 
                 if (Array.isArray(result)) {
-                    [totalTransfers, totalVolume, contractBalance, privacyFee] = result;
-                } else if (typeof result === 'object') {
+                    [totalTransfers, totalVolume, contractBalance, privacyFee, batchTransfers, delayedTransfers] = result;
+                } else {
                     totalTransfers = result._totalTransfers || result[0];
                     totalVolume = result._totalVolume || result[1];
                     contractBalance = result._contractBalance || result[2];
                     privacyFee = result._privacyFee || result[3];
-                } else {
-                    throw new Error('Unexpected result format');
+                    batchTransfers = result._totalBatchTransfers || result[4];
+                    delayedTransfers = result._totalDelayedTransfers || result[5];
                 }
-
-                console.log('Parsed stats:', {
-                    totalTransfers: totalTransfers.toString(),
-                    totalVolume: web3.utils.fromWei(totalVolume, 'ether'),
-                    contractBalance: web3.utils.fromWei(contractBalance, 'ether'),
-                    privacyFee: privacyFee.toString()
-                });
 
                 document.getElementById('totalTransfers').textContent = totalTransfers.toString();
                 document.getElementById('totalVolume').textContent = parseFloat(web3.utils.fromWei(totalVolume, 'ether')).toFixed(1);
+                document.getElementById('batchTransfers').textContent = batchTransfers.toString();
+                document.getElementById('delayedTransfers').textContent = delayedTransfers.toString();
                 document.getElementById('privacyFee').textContent = (Number(privacyFee) / 100) + '%';
             } catch (error) {
                 console.log('Failed to load stats:', error);
-                // Show default values if contract call fails
                 document.getElementById('totalTransfers').textContent = '0';
                 document.getElementById('totalVolume').textContent = '0.0';
+                document.getElementById('batchTransfers').textContent = '0';
+                document.getElementById('delayedTransfers').textContent = '0';
                 document.getElementById('privacyFee').textContent = '0.1%';
             }
+        }
+
+        async function loadUserPrivacyMetrics() {
+            if (!account) return;
+            
+            try {
+                const result = await privacyProContract.methods.getUserPrivacyMetrics(account).call();
+                
+                let privacyScore, totalSent, totalReceived, transferFrequency, averageAmount, lastTransferTime;
+                
+                if (Array.isArray(result)) {
+                    [privacyScore, totalSent, totalReceived, transferFrequency, averageAmount, lastTransferTime] = result;
+                } else {
+                    privacyScore = result._privacyScore || result[0];
+                    totalSent = result._totalSent || result[1];
+                    totalReceived = result._totalReceived || result[2];
+                    transferFrequency = result._transferFrequency || result[3];
+                    averageAmount = result._averageAmount || result[4];
+                    lastTransferTime = result._lastTransferTime || result[5];
+                }
+
+                // Update privacy score display
+                const score = Number(privacyScore);
+                const scoreDeg = (score / 100) * 360;
+                
+                document.getElementById('privacyScoreValue').textContent = score;
+                document.getElementById('privacyScoreCircle').style.setProperty('--score-deg', scoreDeg + 'deg');
+                document.getElementById('privacyScoreContainer').style.display = 'flex';
+
+            } catch (error) {
+                console.log('Failed to load privacy metrics:', error);
+            }
+        }
+
+        function addTransactionToHistory(tx) {
+            transactionHistory.unshift(tx);
+            if (transactionHistory.length > 10) {
+                transactionHistory = transactionHistory.slice(0, 10);
+            }
+            localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
+            renderTransactionHistory();
+        }
+
+        function loadTransactionHistory() {
+            const saved = localStorage.getItem('transactionHistory');
+            if (saved) {
+                transactionHistory = JSON.parse(saved);
+                renderTransactionHistory();
+            }
+        }
+
+        function renderTransactionHistory() {
+            const container = document.getElementById('transactionHistory');
+            
+            if (transactionHistory.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No transfers yet</p>';
+                return;
+            }
+
+            container.innerHTML = transactionHistory.map(tx => `
+                <div class="tx-item">
+                    <div class="tx-type">${tx.type}</div>
+                    <div class="tx-amount">${tx.amount} S</div>
+                    <div class="tx-time">${new Date(tx.timestamp).toLocaleString()}</div>
+                    ${tx.recipients ? `<div class="tx-time">${tx.recipients} recipients</div>` : ''}
+                    ${tx.delay ? `<div class="tx-time">Delay: ${tx.delay}m</div>` : ''}
+                </div>
+            `).join('');
         }
 
         function updateConnectionStatus() {
@@ -667,6 +1383,7 @@
                 statusEl.style.display = 'none';
                 connectBtn.textContent = 'Connect Wallet';
                 connectBtn.disabled = false;
+                document.getElementById('privacyScoreContainer').style.display = 'none';
             }
         }
 
@@ -675,6 +1392,7 @@
                 account = accounts[0];
                 updateConnectionStatus();
                 loadStats();
+                loadUserPrivacyMetrics();
             } else {
                 account = null;
                 updateConnectionStatus();

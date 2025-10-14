@@ -614,7 +614,15 @@
 
         async function loadStats() {
             try {
+                console.log('Loading stats from contract:', PRIVACY_SEND_ADDRESS);
                 const [totalTransfers, totalVolume, contractBalance, privacyFee] = await privacySendContract.methods.getPoolStats().call();
+
+                console.log('Stats received:', {
+                    totalTransfers: totalTransfers.toString(),
+                    totalVolume: web3.utils.fromWei(totalVolume, 'ether'),
+                    contractBalance: web3.utils.fromWei(contractBalance, 'ether'),
+                    privacyFee: privacyFee.toString()
+                });
 
                 document.getElementById('totalTransfers').textContent = totalTransfers.toString();
                 document.getElementById('totalVolume').textContent = parseFloat(web3.utils.fromWei(totalVolume, 'ether')).toFixed(1);

@@ -130,6 +130,458 @@
         },
         "solcVersion": "0.8.20"
       },
+      "contracts/SonicPrivacyPro.sol:SonicPrivacyPro": {
+        "src": "contracts/SonicPrivacyPro.sol:12",
+        "version": {
+          "withMetadata": "63f617fc417c1d77eb34b08956ef5fd3d76ff97fc1002b11d033587f1dc355ba",
+          "withoutMetadata": "8f260d9533d6226439e306ed64f546c98c02c188f68cf3faa56e5a110d2fd90e",
+          "linkedWithoutMetadata": "8f260d9533d6226439e306ed64f546c98c02c188f68cf3faa56e5a110d2fd90e"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Pausable.sol:Pausable",
+          "@openzeppelin/contracts/utils/Context.sol:Context",
+          "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard"
+        ],
+        "libraries": [],
+        "methods": [
+          "()",
+          "sendAnonymously(address payable)",
+          "sendWithDelay(address payable,uint256)",
+          "executeDelayedTransfer(bytes32)",
+          "batchTransfer(address[],uint256[])",
+          "getPoolStats()",
+          "getUserPrivacyMetrics(address)",
+          "getDelayedTransfer(bytes32)",
+          "updatePrivacyFee(uint256)",
+          "withdrawFees()",
+          "pause()",
+          "unpause()",
+          "()",
+          "()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SonicPrivacyPro",
+            "src": "contracts/SonicPrivacyPro.sol:120"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "privacyFeePercent",
+            "src": "contracts/SonicPrivacyPro.sol:15"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            },
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            },
+            {
+              "label": "_owner",
+              "offset": 1,
+              "slot": "1",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "privacyFeePercent",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:15"
+            },
+            {
+              "label": "totalTransfers",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:22"
+            },
+            {
+              "label": "totalVolume",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:23"
+            },
+            {
+              "label": "totalFees",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:24"
+            },
+            {
+              "label": "totalBatchTransfers",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:25"
+            },
+            {
+              "label": "totalDelayedTransfers",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:26"
+            },
+            {
+              "label": "totalSent",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:28"
+            },
+            {
+              "label": "totalReceived",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:29"
+            },
+            {
+              "label": "privacyScore",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:30"
+            },
+            {
+              "label": "batchTransfers",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_bytes32,t_struct(BatchTransfer)414_storage)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:54"
+            },
+            {
+              "label": "delayedTransfers",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_bytes32,t_struct(DelayedTransfer)429_storage)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:55"
+            },
+            {
+              "label": "lastTransferTime",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:58"
+            },
+            {
+              "label": "transferFrequency",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:59"
+            },
+            {
+              "label": "averageAmount",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SonicPrivacyPro",
+              "src": "contracts/SonicPrivacyPro.sol:60"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_address)dyn_storage": {
+              "label": "address[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)dyn_storage": {
+              "label": "uint256[]",
+              "numberOfBytes": "32"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_bytes32": {
+              "label": "bytes32",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_bytes32,t_struct(BatchTransfer)414_storage)": {
+              "label": "mapping(bytes32 => struct SonicPrivacyPro.BatchTransfer)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_bytes32,t_struct(DelayedTransfer)429_storage)": {
+              "label": "mapping(bytes32 => struct SonicPrivacyPro.DelayedTransfer)",
+              "numberOfBytes": "32"
+            },
+            "t_struct(BatchTransfer)414_storage": {
+              "label": "struct SonicPrivacyPro.BatchTransfer",
+              "members": [
+                {
+                  "label": "recipients",
+                  "type": "t_array(t_address)dyn_storage",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "amounts",
+                  "type": "t_array(t_uint256)dyn_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "sender",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "totalAmount",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "fee",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "timestamp",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "executed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "6"
+                }
+              ],
+              "numberOfBytes": "224"
+            },
+            "t_struct(DelayedTransfer)429_storage": {
+              "label": "struct SonicPrivacyPro.DelayedTransfer",
+              "members": [
+                {
+                  "label": "recipient",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "amount",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "sender",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "executeAt",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "fee",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "executed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "delayMinutes",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "6"
+                }
+              ],
+              "numberOfBytes": "224"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:38"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Pausable.sol:Pausable": {
+        "src": "@openzeppelin/contracts/utils/Pausable.sol:17",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "paused()"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            }
+          ],
+          "types": {
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard": {
+        "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:25",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ReentrancyGuard",
+            "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:47"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            }
+          ],
+          "types": {
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
       "contracts/SonicPrivacySendFixed.sol:SonicPrivacySendFixed": {
         "src": "contracts/SonicPrivacySendFixed.sol:12",
         "version": {

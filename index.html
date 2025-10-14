@@ -365,11 +365,11 @@
         <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value" id="totalTransfers">-</div>
+                <div class="stat-value" id="totalTransfers">0</div>
                 <div class="stat-label">Total Transfers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="totalVolume">-</div>
+                <div class="stat-value" id="totalVolume">0.0</div>
                 <div class="stat-label">Volume (S)</div>
             </div>
             <div class="stat-card">
@@ -621,6 +621,10 @@
                 document.getElementById('privacyFee').textContent = (Number(privacyFee) / 100) + '%';
             } catch (error) {
                 console.log('Failed to load stats:', error);
+                // Show default values if contract call fails
+                document.getElementById('totalTransfers').textContent = '0';
+                document.getElementById('totalVolume').textContent = '0.0';
+                document.getElementById('privacyFee').textContent = '0.1%';
             }
         }
 

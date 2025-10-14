@@ -362,6 +362,48 @@
       "artifacts": [
         "SonicPrivacySend"
       ]
+    },
+    "/Users/anthonyverruijt/Desktop/sonic/contracts/contracts/SonicPrivacySendFixed.sol": {
+      "lastModificationDate": 1760454646220,
+      "contentHash": "c1dd2a1aed7764a07c8d44b1b556dd37",
+      "sourceName": "contracts/SonicPrivacySendFixed.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/utils/Pausable.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "SonicPrivacySendFixed"
+      ]
     }
   }
 }

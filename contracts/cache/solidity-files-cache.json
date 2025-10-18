@@ -488,6 +488,48 @@
       "artifacts": [
         "SonicPrivacyProV2"
       ]
+    },
+    "/Users/anthonyverruijt/Desktop/sonic/contracts/contracts/SonicCashSimple.sol": {
+      "lastModificationDate": 1760809414911,
+      "contentHash": "7b30b46d771d5931eb8316c285f96680",
+      "sourceName": "contracts/SonicCashSimple.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/utils/Pausable.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "SonicCashSimple"
+      ]
     }
   }
 }

@@ -1351,7 +1351,7 @@
                 <div id="payment-request" class="payment-request" style="display: none;">
                     <div class="payment-header">
                         <h3>⚡ Payment Request</h3>
-                        <p>Send the exact amount below - recipient gets funds instantly after fees</p>
+                        <p>Just send the exact amount to the contract address below</p>
                     </div>
 
                     <div class="payment-details">
@@ -1366,8 +1366,8 @@
                             <button class="copy-btn" onclick="copyAddress()">📋 Copy</button>
                         </div>
 
-                        <div class="payment-data">
-                            <label>Transaction Data:</label>
+                        <div class="payment-data" style="display: none;">
+                            <label>Transaction Data (Optional):</label>
                             <div class="data-display" id="displayData">0x...</div>
                             <button class="copy-btn" onclick="copyData()">📋 Copy</button>
                         </div>
@@ -1659,37 +1659,35 @@
                             if (tx.to && tx.to.toLowerCase() === PRIVACY_PRO_ADDRESS.toLowerCase()) {
                                 console.log('Found transaction to contract:', tx);
                                 
-                                // Check if transaction data matches and amount is correct
-                                if (tx.input && tx.input.toLowerCase() === currentPaymentRequest.transactionData.toLowerCase()) {
-                                    const txAmount = parseFloat(web3.utils.fromWei(tx.value, 'ether'));
-                                    console.log(`Transaction amount: ${txAmount}, Expected: ${currentPaymentRequest.totalAmount}`);
+                                const txAmount = parseFloat(web3.utils.fromWei(tx.value, 'ether'));
+                                console.log(`Transaction amount: ${txAmount}, Expected: ${currentPaymentRequest.totalAmount}`);
+                                
+                                // Check if amount matches (regardless of transaction data)
+                                if (txAmount >= currentPaymentRequest.totalAmount - 0.001) {
+                                    // Payment found!
+                                    console.log('✅ Payment confirmed!', tx.hash);
                                     
-                                    if (txAmount >= currentPaymentRequest.totalAmount - 0.001) {
-                                        // Payment found!
-                                        console.log('✅ Payment confirmed!', tx.hash);
-                                        
-                                        updatePaymentStatus('confirmed', `✅ Payment confirmed! Recipient receives ${currentPaymentRequest.userReceivesAmount.toFixed(3)} S`);
-                                        
-                                        // Add to history
-                                        addTransactionToHistory({
-                                            type: 'Anonymous Send',
-                                            amount: currentPaymentRequest.userReceivesAmount,
-                                            recipient: currentPaymentRequest.recipient,
-                                            hash: tx.hash,
-                                            timestamp: Date.now()
-                                        });
+                                    updatePaymentStatus('confirmed', `✅ Payment confirmed! Recipient receives ${currentPaymentRequest.userReceivesAmount.toFixed(3)} S`);
+                                    
+                                    // Add to history
+                                    addTransactionToHistory({
+                                        type: 'Anonymous Send',
+                                        amount: currentPaymentRequest.userReceivesAmount,
+                                        recipient: currentPaymentRequest.recipient,
+                                        hash: tx.hash,
+                                        timestamp: Date.now()
+                                    });
 
-                                        // Stop monitoring
-                                        clearInterval(monitoringInterval);
-                                        monitoringInterval = null;
+                                    // Stop monitoring
+                                    clearInterval(monitoringInterval);
+                                    monitoringInterval = null;
 
-                                        // Play success sound
-                                        playSound('connect');
-                                        
-                                        // Refresh stats
-                                        await loadStats();
-                                        return;
-                                    }
+                                    // Play success sound
+                                    playSound('connect');
+                                    
+                                    // Refresh stats
+                                    await loadStats();
+                                    return;
                                 }
                             }
                         }

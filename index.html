@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Sonic Privacy Pro</title>
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0a0e1a">
+    <title>Sonic Cash</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
     <style>
@@ -25,15 +27,15 @@
         :root {
             /* Sonic Brand Colors - Clean Dark Theme */
             --bg-primary: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1329 100%);
-            --bg-card: linear-gradient(145deg, rgba(0, 132, 255, 0.08) 0%, rgba(0, 200, 255, 0.03) 100%);
-            --bg-glass: rgba(255, 255, 255, 0.05);
-            --border-primary: rgba(0, 182, 255, 0.3);
-            --border-secondary: rgba(255, 255, 255, 0.1);
+            --bg-card: linear-gradient(145deg, rgba(0, 132, 255, 0.12) 0%, rgba(0, 200, 255, 0.06) 100%);
+            --bg-glass: rgba(255, 255, 255, 0.08);
+            --border-primary: rgba(0, 182, 255, 0.4);
+            --border-secondary: rgba(255, 255, 255, 0.15);
             
-            /* Text Colors */
+            /* Text Colors - Enhanced for mobile contrast */
             --text-primary: #ffffff;
-            --text-secondary: #a8bfda;
-            --text-muted: #6b7d96;
+            --text-secondary: #b8d4f1;
+            --text-muted: #7a8ba3;
             
             /* Sonic Blue Accent */
             --sonic-blue: #00b6ff;
@@ -42,17 +44,36 @@
             --sonic-glow: rgba(0, 182, 255, 0.4);
             
             /* Status Colors */
-            --success-bg: rgba(16, 185, 129, 0.15);
-            --success-border: rgba(16, 185, 129, 0.3);
-            --success-text: #34d399;
-            --error-bg: rgba(239, 68, 68, 0.15);
-            --error-border: rgba(239, 68, 68, 0.3);
+            --success-bg: rgba(16, 185, 129, 0.2);
+            --success-border: rgba(16, 185, 129, 0.4);
+            --success-text: #4ade80;
+            --error-bg: rgba(239, 68, 68, 0.2);
+            --error-border: rgba(239, 68, 68, 0.4);
             --error-text: #f87171;
             
             /* Shadows */
-            --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 182, 255, 0.15);
-            --shadow-button: 0 8px 32px rgba(0, 182, 255, 0.4);
-            --shadow-hover: 0 16px 48px rgba(0, 182, 255, 0.5);
+            --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 182, 255, 0.2);
+            --shadow-button: 0 8px 32px rgba(0, 182, 255, 0.5);
+            --shadow-hover: 0 16px 48px rgba(0, 182, 255, 0.6);
+        }
+
+        /* Force dark theme on mobile browsers */
+        @media (max-width: 768px) {
+            :root {
+                --bg-primary: #0a0e1a !important;
+                --bg-card: rgba(0, 132, 255, 0.15) !important;
+                --bg-glass: rgba(255, 255, 255, 0.1) !important;
+                --text-primary: #ffffff !important;
+                --text-secondary: #b8d4f1 !important;
+                --border-primary: rgba(0, 182, 255, 0.5) !important;
+                --border-secondary: rgba(255, 255, 255, 0.2) !important;
+            }
+
+            body {
+                background: #0a0e1a !important;
+                background-image: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1329 100%) !important;
+                color: #ffffff !important;
+            }
         }
         
         html {
@@ -947,6 +968,24 @@
             .wallet-desc {
                 font-size: 0.8rem;
             }
+            /* Enhanced mobile color contrast */
+            .stat-card {
+                background: rgba(0, 132, 255, 0.15) !important;
+                border: 2px solid rgba(0, 182, 255, 0.4) !important;
+            }
+            .card {
+                background: rgba(0, 132, 255, 0.12) !important;
+                border: 2px solid rgba(0, 182, 255, 0.4) !important;
+            }
+            .form-group input, .form-group select {
+                background: rgba(255, 255, 255, 0.08) !important;
+                border: 2px solid rgba(255, 255, 255, 0.2) !important;
+                color: #ffffff !important;
+            }
+            .status {
+                background: rgba(0, 132, 255, 0.15) !important;
+                border: 2px solid rgba(0, 182, 255, 0.4) !important;
+            }
             .recipient-row { 
                 grid-template-columns: 1fr auto; 
                 gap: 8px; 
@@ -1547,7 +1586,25 @@
                             'trust',
                             'imtoken',
                             'pillar',
+                            'coinbase',
+                            'exodus',
+                            'walletconnect',
                         ],
+                        desktopLinks: [
+                            'rainbow',
+                            'metamask',
+                            'argent',
+                            'exodus',
+                            'coinbase',
+                        ],
+                        themeMode: 'dark',
+                        themeVariables: {
+                            '--wcm-z-index': '9999',
+                            '--wcm-background-color': '#0a0e1a',
+                            '--wcm-accent-color': '#00b6ff',
+                            '--wcm-text-color': '#ffffff',
+                            '--wcm-background-border-radius': '16px',
+                        }
                     },
                 });
 

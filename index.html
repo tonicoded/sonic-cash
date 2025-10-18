@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Sonic Privacy Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -571,6 +572,80 @@
             backdrop-filter: blur(10px);
         }
 
+        .wallet-selector {
+            background: var(--bg-glass);
+            border: 1.5px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(15px);
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .wallet-selector h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .wallet-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .wallet-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-glass);
+            border: 1.5px solid var(--border-secondary);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .wallet-option:hover {
+            border-color: var(--border-primary);
+            background: rgba(0, 182, 255, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 182, 255, 0.2);
+        }
+
+        .wallet-icon {
+            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            border: 1px solid var(--border-secondary);
+        }
+
+        .wallet-info {
+            flex: 1;
+        }
+
+        .wallet-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .wallet-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
         .alert {
             padding: 18px 24px;
             border-radius: 16px;
@@ -853,6 +928,25 @@
                 font-size: 15px;
                 border-radius: 14px;
             }
+            .wallet-selector {
+                padding: 20px 16px;
+                border-radius: 16px;
+            }
+            .wallet-option {
+                padding: 14px;
+                border-radius: 12px;
+            }
+            .wallet-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            .wallet-name {
+                font-size: 1rem;
+            }
+            .wallet-desc {
+                font-size: 0.8rem;
+            }
             .recipient-row { 
                 grid-template-columns: 1fr auto; 
                 gap: 8px; 
@@ -1126,8 +1220,32 @@
                     </button>
                 </div>
 
-                <button class="btn btn-secondary" id="connectBtn" onclick="connectWallet()">
+                <div class="wallet-selector" id="walletSelector">
+                    <h3>Choose Wallet</h3>
+                    <div class="wallet-options">
+                        <button class="wallet-option" onclick="connectMetaMask()">
+                            <div class="wallet-icon">🦊</div>
+                            <div class="wallet-info">
+                                <div class="wallet-name">MetaMask</div>
+                                <div class="wallet-desc">Browser Extension</div>
+                            </div>
+                        </button>
+                        <button class="wallet-option" onclick="connectWalletConnect()">
+                            <div class="wallet-icon">📱</div>
+                            <div class="wallet-info">
+                                <div class="wallet-name">WalletConnect</div>
+                                <div class="wallet-desc">Mobile Wallets</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" id="connectBtn" onclick="showWalletSelector()" style="display: block;">
                     Connect Wallet
+                </button>
+
+                <button class="btn btn-secondary" id="disconnectBtn" onclick="disconnectWallet()" style="display: none;">
+                    Disconnect Wallet
                 </button>
             </div>
 
@@ -1164,6 +1282,10 @@
         const SONIC_TESTNET_CHAIN_ID = '0x3909'; // 14601
         const SONIC_TESTNET_RPC = 'https://rpc.testnet.soniclabs.com';
         const PRIVACY_PRO_ADDRESS = '0x8D8143Af697B14aCe736c072940eED77ddB15EaE';
+
+        // Wallet connection variables
+        let walletConnectProvider = null;
+        let currentWalletType = null; // 'metamask' or 'walletconnect'
 
         // Sound effects
         let soundEnabled = true;
@@ -1350,9 +1472,22 @@
             button.parentElement.remove();
         }
 
-        async function connectWallet() {
+        // Wallet selector functions
+        function showWalletSelector() {
+            document.getElementById('walletSelector').style.display = 'block';
+            document.getElementById('connectBtn').style.display = 'none';
+            playSound('click');
+        }
+
+        function hideWalletSelector() {
+            document.getElementById('walletSelector').style.display = 'none';
+            document.getElementById('connectBtn').style.display = 'block';
+        }
+
+        // MetaMask connection
+        async function connectMetaMask() {
             if (!window.ethereum) {
-                showAlert('error', 'MetaMask not installed');
+                showAlert('error', 'MetaMask not installed. Please install MetaMask browser extension.');
                 return;
             }
 
@@ -1363,38 +1498,132 @@
                 });
                 
                 account = accounts[0];
+                currentWalletType = 'metamask';
+                web3 = new Web3(window.ethereum);
 
                 // Switch/add Sonic network
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: SONIC_TESTNET_CHAIN_ID }]
-                    });
-                } catch (error) {
-                    if (error.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: SONIC_TESTNET_CHAIN_ID,
-                                chainName: 'Sonic Testnet',
-                                nativeCurrency: { name: 'Sonic', symbol: 'S', decimals: 18 },
-                                rpcUrls: [SONIC_TESTNET_RPC],
-                                blockExplorerUrls: ['https://testnet.sonicscan.org']
-                            }]
-                        });
-                    }
-                }
+                await switchToSonicNetwork();
 
+                privacyProContract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
+                
+                hideWalletSelector();
                 updateConnectionStatus();
                 await loadUserPrivacyMetrics();
-                showAlert('success', 'Wallet connected successfully');
+                showAlert('success', 'MetaMask connected successfully');
                 playSound('connect');
                 await loadStats();
 
+                // Listen for account changes
+                window.ethereum.on('accountsChanged', handleAccountsChanged);
+                window.ethereum.on('chainChanged', () => window.location.reload());
+
             } catch (error) {
-                console.error('Connection error:', error);
-                showAlert('error', 'Failed to connect: ' + error.message);
+                console.error('MetaMask connection error:', error);
+                showAlert('error', 'Failed to connect MetaMask: ' + error.message);
                 playSound('error');
+            }
+        }
+
+        // WalletConnect connection
+        async function connectWalletConnect() {
+            try {
+                if (!window.WalletConnectProvider) {
+                    showAlert('error', 'WalletConnect not loaded');
+                    return;
+                }
+
+                // Create WalletConnect provider
+                walletConnectProvider = new window.WalletConnectProvider.default({
+                    rpc: {
+                        14601: SONIC_TESTNET_RPC,
+                    },
+                    chainId: 14601,
+                    qrcode: true,
+                    qrcodeModalOptions: {
+                        mobileLinks: [
+                            'rainbow',
+                            'metamask',
+                            'argent',
+                            'trust',
+                            'imtoken',
+                            'pillar',
+                        ],
+                    },
+                });
+
+                // Enable session (triggers QR Code modal)
+                await walletConnectProvider.enable();
+
+                web3 = new Web3(walletConnectProvider);
+                const accounts = await web3.eth.getAccounts();
+                account = accounts[0];
+                currentWalletType = 'walletconnect';
+
+                privacyProContract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
+
+                hideWalletSelector();
+                updateConnectionStatus();
+                await loadUserPrivacyMetrics();
+                showAlert('success', 'Wallet connected via WalletConnect');
+                playSound('connect');
+                await loadStats();
+
+                // Listen for disconnect
+                walletConnectProvider.on('disconnect', (code, reason) => {
+                    console.log('WalletConnect disconnected:', code, reason);
+                    disconnectWallet();
+                });
+
+            } catch (error) {
+                console.error('WalletConnect connection error:', error);
+                showAlert('error', 'Failed to connect via WalletConnect: ' + error.message);
+                playSound('error');
+            }
+        }
+
+        // Switch to Sonic network
+        async function switchToSonicNetwork() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: SONIC_TESTNET_CHAIN_ID }]
+                });
+            } catch (error) {
+                if (error.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: SONIC_TESTNET_CHAIN_ID,
+                            chainName: 'Sonic Testnet',
+                            nativeCurrency: { name: 'Sonic', symbol: 'S', decimals: 18 },
+                            rpcUrls: [SONIC_TESTNET_RPC],
+                            blockExplorerUrls: ['https://testnet.sonicscan.org']
+                        }]
+                    });
+                }
+            }
+        }
+
+        // Disconnect wallet
+        async function disconnectWallet() {
+            try {
+                if (currentWalletType === 'walletconnect' && walletConnectProvider) {
+                    await walletConnectProvider.disconnect();
+                    walletConnectProvider = null;
+                }
+
+                account = null;
+                currentWalletType = null;
+                web3 = null;
+                privacyProContract = null;
+
+                updateConnectionStatus();
+                showAlert('success', 'Wallet disconnected');
+                playSound('click');
+
+            } catch (error) {
+                console.error('Disconnect error:', error);
+                showAlert('error', 'Error disconnecting wallet');
             }
         }
 
@@ -1727,16 +1956,24 @@
             const statusEl = document.getElementById('connectionStatus');
             const addressEl = document.getElementById('walletAddress');
             const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            const walletSelector = document.getElementById('walletSelector');
 
             if (account) {
                 statusEl.style.display = 'flex';
                 addressEl.textContent = account.slice(0, 6) + '...' + account.slice(-4);
-                connectBtn.textContent = 'Connected';
-                connectBtn.disabled = true;
+                connectBtn.style.display = 'none';
+                disconnectBtn.style.display = 'block';
+                walletSelector.style.display = 'none';
+                
+                // Update connection status text to show wallet type
+                const walletTypeText = currentWalletType === 'metamask' ? 'MetaMask' : 'WalletConnect';
+                statusEl.querySelector('span').textContent = `Connected via ${walletTypeText}`;
             } else {
                 statusEl.style.display = 'none';
-                connectBtn.textContent = 'Connect Wallet';
-                connectBtn.disabled = false;
+                connectBtn.style.display = 'block';
+                disconnectBtn.style.display = 'none';
+                walletSelector.style.display = 'none';
                 document.getElementById('privacyScoreContainer').style.display = 'none';
             }
         }

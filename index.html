@@ -699,6 +699,134 @@
             color: var(--text-secondary);
         }
 
+        /* Payment Request System */
+        .payment-request {
+            background: var(--bg-glass);
+            border: 1.5px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 24px;
+            margin-top: 20px;
+            backdrop-filter: blur(15px);
+            animation: slideIn 0.3s ease;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .payment-header h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .payment-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .payment-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .payment-amount,
+        .payment-address,
+        .payment-data {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .payment-amount label,
+        .payment-address label,
+        .payment-data label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .amount-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--sonic-blue);
+            font-family: ui-monospace, monospace;
+        }
+
+        .address-display,
+        .data-display {
+            font-family: ui-monospace, monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .copy-btn {
+            background: var(--sonic-gradient);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 182, 255, 0.3);
+        }
+
+        .payment-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-indicator.pending {
+            background: #fbbf24;
+        }
+
+        .status-indicator.confirmed {
+            background: var(--success-text);
+            animation: none;
+        }
+
+        .status-indicator.failed {
+            background: var(--error-text);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .alert {
             padding: 18px 24px;
             border-radius: 16px;
@@ -1199,48 +1327,58 @@
 
         <div class="main-grid">
             <div class="card">
-                <!-- Connection Status -->
-                <div class="status" id="connectionStatus" style="display: none;">
-                    <span>Connected</span>
-                    <span class="status-value" id="walletAddress">Not connected</span>
-                </div>
-
-                <!-- Privacy Score -->
-                <div class="privacy-score" id="privacyScoreContainer" style="display: none;">
-                    <div class="privacy-score-circle" id="privacyScoreCircle">
-                        <span class="privacy-score-value" id="privacyScoreValue">0</span>
-                    </div>
-                    <div>
-                        <h4>Privacy Score</h4>
-                        <p class="text-secondary">Based on your transaction patterns</p>
-                    </div>
-                </div>
-
                 <!-- Alerts -->
                 <div id="alerts"></div>
 
-                <!-- Tab Navigation - Hidden for now, only Instant Send -->
-                <div class="tab-buttons" style="display: none;">
-                    <button class="tab-btn active" onclick="switchTab('instant')">Instant Send</button>
-                    <button class="tab-btn" onclick="switchTab('delayed')">Delayed Send</button>
-                    <button class="tab-btn" onclick="switchTab('batch')">Batch Send</button>
-                </div>
-
-                <!-- Instant Send Tab -->
-                <div id="instant-tab" class="tab-content active">
+                <!-- Payment Request System -->
+                <div id="payment-form" class="tab-content active">
                     <div class="form-group">
-                        <label for="amount">Amount</label>
-                        <input type="number" id="amount" class="amount-input" placeholder="0.00" step="0.001" min="0.001">
+                        <label for="amount">Amount (S)</label>
+                        <input type="number" id="amount" class="amount-input" placeholder="15.0" step="0.001" min="0.001">
                     </div>
 
                     <div class="form-group">
-                        <label for="recipient">Recipient Address</label>
+                        <label for="recipient">Send To Address</label>
                         <input type="text" id="recipient" placeholder="0x...">
                     </div>
 
-                    <button class="btn" id="sendBtn" onclick="sendAnonymously()">
-                        <span id="sendText">Send Anonymously</span>
+                    <button class="btn" id="createPaymentBtn" onclick="createPaymentRequest()">
+                        <span id="createPaymentText">Create Payment Request</span>
                     </button>
+                </div>
+
+                <!-- Payment Request Display -->
+                <div id="payment-request" class="payment-request" style="display: none;">
+                    <div class="payment-header">
+                        <h3>💸 Payment Request</h3>
+                        <p>Send the exact amount to complete your anonymous transfer</p>
+                    </div>
+
+                    <div class="payment-details">
+                        <div class="payment-amount">
+                            <label>Send Amount:</label>
+                            <div class="amount-display" id="displayAmount">15.0 S</div>
+                        </div>
+
+                        <div class="payment-address">
+                            <label>To Contract Address:</label>
+                            <div class="address-display" id="displayAddress">0x8D8143Af697B14aCe736c072940eED77ddB15EaE</div>
+                            <button class="copy-btn" onclick="copyAddress()">📋 Copy</button>
+                        </div>
+
+                        <div class="payment-data">
+                            <label>Transaction Data:</label>
+                            <div class="data-display" id="displayData">0x...</div>
+                            <button class="copy-btn" onclick="copyData()">📋 Copy</button>
+                        </div>
+
+                        <div class="payment-status" id="paymentStatus">
+                            <div class="status-indicator pending" id="statusIndicator"></div>
+                            <span id="statusText">Waiting for payment...</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary" onclick="resetPayment()">Create New Payment</button>
                 </div>
 
                 <!-- Delayed Send Tab - Hidden -->
@@ -1291,33 +1429,6 @@
                     </button>
                 </div>
 
-                <div class="wallet-selector" id="walletSelector">
-                    <h3>Choose Wallet</h3>
-                    <div class="wallet-options">
-                        <button class="wallet-option" onclick="connectMetaMask()">
-                            <div class="wallet-icon">🦊</div>
-                            <div class="wallet-info">
-                                <div class="wallet-name">MetaMask</div>
-                                <div class="wallet-desc">Browser Extension</div>
-                            </div>
-                        </button>
-                        <button class="wallet-option" onclick="connectWalletConnect()">
-                            <div class="wallet-icon">📱</div>
-                            <div class="wallet-info">
-                                <div class="wallet-name">WalletConnect</div>
-                                <div class="wallet-desc">Mobile Wallets</div>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="btn btn-secondary" id="connectBtn" onclick="showWalletSelector()" style="display: block;">
-                    Connect Wallet
-                </button>
-
-                <button class="btn btn-secondary" id="disconnectBtn" onclick="disconnectWallet()" style="display: none;">
-                    Disconnect Wallet
-                </button>
             </div>
 
             <!-- Sidebar -->
@@ -1354,9 +1465,9 @@
         const SONIC_TESTNET_RPC = 'https://rpc.testnet.soniclabs.com';
         const PRIVACY_PRO_ADDRESS = '0x8D8143Af697B14aCe736c072940eED77ddB15EaE';
 
-        // Wallet connection variables
-        let walletConnectProvider = null;
-        let currentWalletType = null; // 'metamask' or 'walletconnect'
+        // Payment request variables
+        let currentPaymentRequest = null;
+        let monitoringInterval = null;
 
         // Sound effects
         let soundEnabled = true;
@@ -1367,31 +1478,11 @@
             connect: () => playChord([400, 500, 600], 300)
         };
 
-        // Contract ABI
+        // Simplified ABI for payment requests
         const PRIVACY_PRO_ABI = [
             {
                 "inputs": [{"type": "address", "name": "recipient"}],
                 "name": "sendAnonymously",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"type": "address", "name": "recipient"},
-                    {"type": "uint256", "name": "delayMinutes"}
-                ],
-                "name": "sendWithDelay",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"type": "address[]", "name": "recipients"},
-                    {"type": "uint256[]", "name": "amounts"}
-                ],
-                "name": "batchTransfer",
                 "outputs": [],
                 "stateMutability": "payable",
                 "type": "function"
@@ -1409,53 +1500,189 @@
                 ],
                 "stateMutability": "view",
                 "type": "function"
-            },
-            {
-                "inputs": [{"type": "address", "name": "user"}],
-                "name": "getUserPrivacyMetrics",
-                "outputs": [
-                    {"type": "uint256", "name": "_privacyScore"},
-                    {"type": "uint256", "name": "_totalSent"},
-                    {"type": "uint256", "name": "_totalReceived"},
-                    {"type": "uint256", "name": "_transferFrequency"},
-                    {"type": "uint256", "name": "_averageAmount"},
-                    {"type": "uint256", "name": "_lastTransferTime"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
             }
         ];
 
         let web3;
-        let account;
-        let privacyProContract;
         let transactionHistory = [];
 
         // Initialize
         window.addEventListener('load', async () => {
-            if (typeof window.ethereum !== 'undefined') {
-                web3 = new Web3(window.ethereum);
-                privacyProContract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
-                
-                // Check if already connected
-                const accounts = await web3.eth.getAccounts();
-                if (accounts.length > 0) {
-                    account = accounts[0];
-                    updateConnectionStatus();
-                    await loadUserPrivacyMetrics();
+            // Initialize Web3 for reading blockchain data only
+            web3 = new Web3(SONIC_TESTNET_RPC);
+            
+            // Load stats
+            await loadStats();
+            loadTransactionHistory();
+            
+            // Refresh stats every 10 seconds
+            setInterval(loadStats, 10000);
+        });
+
+        // Payment Request Functions
+        function createPaymentRequest() {
+            const amountValue = document.getElementById('amount').value.trim();
+            const recipientValue = document.getElementById('recipient').value.trim();
+
+            if (!amountValue || parseFloat(amountValue) <= 0) {
+                showAlert('error', 'Please enter a valid amount');
+                return;
+            }
+
+            if (!recipientValue || !isValidAddress(recipientValue)) {
+                showAlert('error', 'Please enter a valid recipient address');
+                return;
+            }
+
+            try {
+                const amount = parseFloat(amountValue);
+                const fee = amount * 0.001; // 0.1% fee
+                const totalAmount = amount + fee;
+
+                // Create transaction data for sendAnonymously function
+                const contract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
+                const transactionData = contract.methods.sendAnonymously(recipientValue).encodeABI();
+
+                currentPaymentRequest = {
+                    amount: amount,
+                    totalAmount: totalAmount,
+                    recipient: recipientValue,
+                    contractAddress: PRIVACY_PRO_ADDRESS,
+                    transactionData: transactionData,
+                    timestamp: Date.now()
+                };
+
+                displayPaymentRequest();
+                startMonitoring();
+                playSound('click');
+
+            } catch (error) {
+                console.error('Error creating payment request:', error);
+                showAlert('error', 'Failed to create payment request');
+            }
+        }
+
+        function displayPaymentRequest() {
+            // Hide form, show payment request
+            document.getElementById('payment-form').style.display = 'none';
+            document.getElementById('payment-request').style.display = 'block';
+
+            // Update display values
+            document.getElementById('displayAmount').textContent = currentPaymentRequest.totalAmount.toFixed(3) + ' S';
+            document.getElementById('displayAddress').textContent = currentPaymentRequest.contractAddress;
+            document.getElementById('displayData').textContent = currentPaymentRequest.transactionData;
+
+            showAlert('success', 'Payment request created! Send the exact amount to the contract address.');
+        }
+
+        function resetPayment() {
+            // Stop monitoring
+            if (monitoringInterval) {
+                clearInterval(monitoringInterval);
+                monitoringInterval = null;
+            }
+
+            // Reset state
+            currentPaymentRequest = null;
+
+            // Show form, hide payment request
+            document.getElementById('payment-form').style.display = 'block';
+            document.getElementById('payment-request').style.display = 'none';
+
+            // Clear form
+            document.getElementById('amount').value = '';
+            document.getElementById('recipient').value = '';
+
+            // Reset status
+            updatePaymentStatus('pending', 'Ready for new payment');
+            playSound('click');
+        }
+
+        function copyAddress() {
+            navigator.clipboard.writeText(currentPaymentRequest.contractAddress).then(() => {
+                showAlert('success', 'Contract address copied to clipboard');
+                playSound('click');
+            });
+        }
+
+        function copyData() {
+            navigator.clipboard.writeText(currentPaymentRequest.transactionData).then(() => {
+                showAlert('success', 'Transaction data copied to clipboard');
+                playSound('click');
+            });
+        }
+
+        function startMonitoring() {
+            updatePaymentStatus('pending', 'Waiting for payment...');
+            
+            // Check for payment every 5 seconds
+            monitoringInterval = setInterval(async () => {
+                await checkForPayment();
+            }, 5000);
+        }
+
+        async function checkForPayment() {
+            if (!currentPaymentRequest) return;
+
+            try {
+                // Check recent transactions to the contract
+                const latestBlock = await web3.eth.getBlockNumber();
+                const fromBlock = Math.max(0, latestBlock - 100); // Check last 100 blocks
+
+                // Look for transactions to our contract
+                const logs = await web3.eth.getPastLogs({
+                    fromBlock: fromBlock,
+                    toBlock: 'latest',
+                    address: PRIVACY_PRO_ADDRESS
+                });
+
+                // Check if any transaction matches our payment request
+                for (let log of logs) {
+                    const tx = await web3.eth.getTransaction(log.transactionHash);
+                    if (tx && tx.input === currentPaymentRequest.transactionData && 
+                        parseFloat(web3.utils.fromWei(tx.value, 'ether')) >= currentPaymentRequest.totalAmount - 0.001) {
+                        
+                        // Payment confirmed!
+                        updatePaymentStatus('confirmed', `Payment confirmed! Transaction: ${tx.hash}`);
+                        
+                        // Add to history
+                        addTransactionToHistory({
+                            type: 'Anonymous Send',
+                            amount: currentPaymentRequest.amount,
+                            recipient: currentPaymentRequest.recipient,
+                            hash: tx.hash,
+                            timestamp: Date.now()
+                        });
+
+                        // Stop monitoring
+                        clearInterval(monitoringInterval);
+                        monitoringInterval = null;
+
+                        // Play success sound
+                        playSound('connect');
+                        
+                        // Refresh stats
+                        await loadStats();
+                        break;
+                    }
                 }
 
-                // Load stats
-                await loadStats();
-                loadTransactionHistory();
-
-                // Listen for changes
-                window.ethereum.on('accountsChanged', handleAccountsChanged);
-                window.ethereum.on('chainChanged', () => window.location.reload());
-            } else {
-                showAlert('error', 'MetaMask not detected. Please install MetaMask.');
+            } catch (error) {
+                console.error('Error checking for payment:', error);
             }
-        });
+        }
+
+        function updatePaymentStatus(status, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+
+            indicator.className = `status-indicator ${status}`;
+            text.textContent = message;
+        }
+
+        function isValidAddress(address) {
+            return /^0x[a-fA-F0-9]{40}$/.test(address);
+        }
 
 
         // Sound Management
@@ -1992,7 +2219,8 @@
 
         async function loadStats() {
             try {
-                const result = await privacyProContract.methods.getPoolStats().call();
+                const contract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
+                const result = await contract.methods.getPoolStats().call();
                 
                 let totalTransfers, totalVolume, contractBalance, privacyFee, batchTransfers, delayedTransfers;
                 
@@ -2009,15 +2237,11 @@
 
                 document.getElementById('totalTransfers').textContent = totalTransfers.toString();
                 document.getElementById('totalVolume').textContent = parseFloat(web3.utils.fromWei(totalVolume, 'ether')).toFixed(1);
-                document.getElementById('batchTransfers').textContent = batchTransfers.toString();
-                document.getElementById('delayedTransfers').textContent = delayedTransfers.toString();
                 document.getElementById('privacyFee').textContent = (Number(privacyFee) / 100) + '%';
             } catch (error) {
                 console.log('Failed to load stats:', error);
                 document.getElementById('totalTransfers').textContent = '0';
                 document.getElementById('totalVolume').textContent = '0.0';
-                document.getElementById('batchTransfers').textContent = '0';
-                document.getElementById('delayedTransfers').textContent = '0';
                 document.getElementById('privacyFee').textContent = '0.1%';
             }
         }

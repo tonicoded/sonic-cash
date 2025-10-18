@@ -130,6 +130,341 @@
         },
         "solcVersion": "0.8.20"
       },
+      "contracts/SonicPrivacyProV2.sol:SonicPrivacyProV2": {
+        "src": "contracts/SonicPrivacyProV2.sol:12",
+        "version": {
+          "withMetadata": "9010632310cbce57e676de0c4ab6e8924d0a897ef2eaffc419ab2243a3841617",
+          "withoutMetadata": "2499e2b64553caaa8d7b64a9e13c2814ba1094581d9f26d86b4df81dcace99d5",
+          "linkedWithoutMetadata": "2499e2b64553caaa8d7b64a9e13c2814ba1094581d9f26d86b4df81dcace99d5"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Pausable.sol:Pausable",
+          "@openzeppelin/contracts/utils/Context.sol:Context",
+          "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard"
+        ],
+        "libraries": [],
+        "methods": [
+          "()",
+          "createPaymentRequest(address,uint256)",
+          "processPayment(address)",
+          "checkPaymentStatus(address)",
+          "getPaymentRequest(address)",
+          "getPoolStats()",
+          "manualProcessPayment(address)",
+          "updatePrivacyFee(uint256)",
+          "withdrawFees()",
+          "pause()",
+          "unpause()",
+          "()",
+          "()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SonicPrivacyProV2",
+            "src": "contracts/SonicPrivacyProV2.sol:66"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "privacyFeePercent",
+            "src": "contracts/SonicPrivacyProV2.sol:15"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            },
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            },
+            {
+              "label": "_owner",
+              "offset": 1,
+              "slot": "1",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "privacyFeePercent",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:15"
+            },
+            {
+              "label": "totalTransfers",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:18"
+            },
+            {
+              "label": "totalVolume",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:19"
+            },
+            {
+              "label": "totalFees",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:20"
+            },
+            {
+              "label": "totalPaymentRequests",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_uint256",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:21"
+            },
+            {
+              "label": "paymentRequests",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_mapping(t_address,t_struct(PaymentRequest)392_storage)",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:35"
+            },
+            {
+              "label": "requestToAddress",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_bytes32,t_address)",
+              "contract": "SonicPrivacyProV2",
+              "src": "contracts/SonicPrivacyProV2.sol:38"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_bytes32": {
+              "label": "bytes32",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_struct(PaymentRequest)392_storage)": {
+              "label": "mapping(address => struct SonicPrivacyProV2.PaymentRequest)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_bytes32,t_address)": {
+              "label": "mapping(bytes32 => address)",
+              "numberOfBytes": "32"
+            },
+            "t_struct(PaymentRequest)392_storage": {
+              "label": "struct SonicPrivacyProV2.PaymentRequest",
+              "members": [
+                {
+                  "label": "recipient",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "amount",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "fee",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "depositAddress",
+                  "type": "t_address",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "timestamp",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "completed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool",
+                  "offset": 1,
+                  "slot": "5"
+                }
+              ],
+              "numberOfBytes": "192"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:38"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/Pausable.sol:Pausable": {
+        "src": "@openzeppelin/contracts/utils/Pausable.sol:17",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "paused()"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_paused",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_bool",
+              "contract": "Pausable",
+              "src": "@openzeppelin/contracts/utils/Pausable.sol:18"
+            }
+          ],
+          "types": {
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
+      "@openzeppelin/contracts/utils/ReentrancyGuard.sol:ReentrancyGuard": {
+        "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:25",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ReentrancyGuard",
+            "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:47"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_status",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "ReentrancyGuard",
+              "src": "@openzeppelin/contracts/utils/ReentrancyGuard.sol:40"
+            }
+          ],
+          "types": {
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.20"
+      },
       "contracts/SonicPrivacyPro.sol:SonicPrivacyPro": {
         "src": "contracts/SonicPrivacyPro.sol:12",
         "version": {

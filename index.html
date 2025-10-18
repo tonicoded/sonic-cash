@@ -165,6 +165,15 @@
             transform: translateX(30px);
         }
 
+        /* Force theme styles for mobile */
+        body[data-theme="light"] {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%) !important;
+        }
+
+        body[data-theme="dark"] {
+            background: linear-gradient(135deg, #0a0d1f 0%, #1a1d3a 50%, #0f1229 100%) !important;
+        }
+
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 350px;
@@ -661,7 +670,7 @@
                 overflow-x: hidden;
             }
             .stats-grid { 
-                grid-template-columns: repeat(2, 1fr); 
+                grid-template-columns: repeat(3, 1fr); 
                 gap: 12px;
                 margin-bottom: 24px;
             }
@@ -781,8 +790,8 @@
                 font-size: 0.9rem;
             }
             .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
             }
             .stat-card {
                 padding: 12px 8px;
@@ -851,14 +860,6 @@
             <div class="stat-card">
                 <div class="stat-value" id="totalVolume">0.0</div>
                 <div class="stat-label">Volume (S)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="batchTransfers">0</div>
-                <div class="stat-label">Batch Transfers</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="delayedTransfers">0</div>
-                <div class="stat-label">Delayed Transfers</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="privacyFee">0.1%</div>
@@ -1098,27 +1099,56 @@
             }
         });
 
-        // Theme Management
+        // Theme Management - Fixed for mobile
         function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme') || 'dark';
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            playSound('click');
-            console.log('Theme changed to:', newTheme);
+            try {
+                const body = document.body;
+                const currentTheme = body.getAttribute('data-theme') || 'dark';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                // Force attribute change
+                body.setAttribute('data-theme', newTheme);
+                body.className = body.className; // Force re-render
+                
+                // Save to localStorage
+                localStorage.setItem('theme', newTheme);
+                
+                // Force CSS re-evaluation
+                setTimeout(() => {
+                    body.style.display = 'none';
+                    body.offsetHeight; // Trigger reflow
+                    body.style.display = 'flex';
+                }, 10);
+                
+                playSound('click');
+                console.log('Theme toggled to:', newTheme);
+            } catch (error) {
+                console.error('Theme toggle error:', error);
+            }
         }
 
-        // Load saved theme on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.body.setAttribute('data-theme', savedTheme);
-            console.log('Theme loaded:', savedTheme);
-        });
+        // Initialize theme immediately
+        (function initTheme() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.body.setAttribute('data-theme', savedTheme);
+                console.log('Initial theme set to:', savedTheme);
+            } catch (error) {
+                console.error('Theme init error:', error);
+                document.body.setAttribute('data-theme', 'dark');
+            }
+        })();
 
-        // Also set theme immediately (fallback)
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.body.setAttribute('data-theme', savedTheme);
+        // Also set on DOM ready (fallback)
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.body.setAttribute('data-theme', savedTheme);
+                console.log('Theme loaded on DOM ready:', savedTheme);
+            } catch (error) {
+                console.error('Theme DOM ready error:', error);
+            }
+        });
 
         // Sound Management
         function toggleSound() {

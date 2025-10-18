@@ -1351,7 +1351,7 @@
                 <div id="payment-request" class="payment-request" style="display: none;">
                     <div class="payment-header">
                         <h3>⚡ Payment Request</h3>
-                        <p>Just send the exact amount to the contract address below</p>
+                        <p>Send the amount WITH transaction data to call the smart contract function</p>
                     </div>
 
                     <div class="payment-details">
@@ -1366,10 +1366,13 @@
                             <button class="copy-btn" onclick="copyAddress()">📋 Copy</button>
                         </div>
 
-                        <div class="payment-data" style="display: none;">
-                            <label>Transaction Data (Optional):</label>
+                        <div class="payment-data">
+                            <label>⚠️ Transaction Data (REQUIRED for transfer):</label>
                             <div class="data-display" id="displayData">0x...</div>
                             <button class="copy-btn" onclick="copyData()">📋 Copy</button>
+                            <p style="color: var(--error-text); font-size: 12px; margin-top: 8px;">
+                                💡 You MUST include this data for the recipient to receive funds!
+                            </p>
                         </div>
 
                         <div class="payment-status" id="paymentStatus">
@@ -1662,8 +1665,9 @@
                                 const txAmount = parseFloat(web3.utils.fromWei(tx.value, 'ether'));
                                 console.log(`Transaction amount: ${txAmount}, Expected: ${currentPaymentRequest.totalAmount}`);
                                 
-                                // Check if amount matches (regardless of transaction data)
-                                if (txAmount >= currentPaymentRequest.totalAmount - 0.001) {
+                                // Check if transaction data matches AND amount is correct
+                                if (tx.input && tx.input.toLowerCase() === currentPaymentRequest.transactionData.toLowerCase() && 
+                                    txAmount >= currentPaymentRequest.totalAmount - 0.001) {
                                     // Payment found!
                                     console.log('✅ Payment confirmed!', tx.hash);
                                     

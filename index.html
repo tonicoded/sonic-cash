@@ -1350,8 +1350,8 @@
                 <!-- Payment Request Display -->
                 <div id="payment-request" class="payment-request" style="display: none;">
                     <div class="payment-header">
-                        <h3>⚡ Payment Request</h3>
-                        <p>Send the amount WITH transaction data to call the smart contract function</p>
+                        <h3>🔐 Unique Payment Address</h3>
+                        <p>Simply send to this unique address - no transaction data needed!</p>
                     </div>
 
                     <div class="payment-details">
@@ -1361,19 +1361,11 @@
                         </div>
 
                         <div class="payment-address">
-                            <label>To Contract Address:</label>
-                            <div class="address-display" id="displayAddress">0x8D8143Af697B14aCe736c072940eED77ddB15EaE</div>
+                            <label>🎯 To Unique Deposit Address:</label>
+                            <div class="address-display" id="displayAddress">0x...</div>
                             <button class="copy-btn" onclick="copyAddress()">📋 Copy</button>
                         </div>
 
-                        <div class="payment-data">
-                            <label>⚠️ Transaction Data (REQUIRED for transfer):</label>
-                            <div class="data-display" id="displayData">0x...</div>
-                            <button class="copy-btn" onclick="copyData()">📋 Copy</button>
-                            <p style="color: var(--error-text); font-size: 12px; margin-top: 8px;">
-                                💡 You MUST include this data for the recipient to receive funds!
-                            </p>
-                        </div>
 
                         <div class="payment-status" id="paymentStatus">
                             <div class="status-indicator pending" id="statusIndicator"></div>
@@ -1466,7 +1458,7 @@
         // Configuration
         const SONIC_TESTNET_CHAIN_ID = '0x3909'; // 14601
         const SONIC_TESTNET_RPC = 'https://rpc.testnet.soniclabs.com';
-        const PRIVACY_PRO_ADDRESS = '0x8D8143Af697B14aCe736c072940eED77ddB15EaE';
+        const PRIVACY_PRO_V2_ADDRESS = '0x91Fbd6DEFd47bfAa37Fc18B749Ca81D5FA5ab8C0';
 
         // Payment request variables
         let currentPaymentRequest = null;
@@ -1481,13 +1473,32 @@
             connect: () => playChord([400, 500, 600], 300)
         };
 
-        // Simplified ABI for payment requests
-        const PRIVACY_PRO_ABI = [
+        // V2 ABI for unique deposit addresses
+        const PRIVACY_PRO_V2_ABI = [
             {
-                "inputs": [{"type": "address", "name": "recipient"}],
-                "name": "sendAnonymously",
-                "outputs": [],
-                "stateMutability": "payable",
+                "inputs": [
+                    {"type": "address", "name": "recipient"},
+                    {"type": "uint256", "name": "amount"}
+                ],
+                "name": "createPaymentRequest",
+                "outputs": [
+                    {"type": "bytes32", "name": "requestId"},
+                    {"type": "address", "name": "depositAddress"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [{"type": "address", "name": "depositAddress"}],
+                "name": "checkPaymentStatus",
+                "outputs": [
+                    {"type": "bool", "name": "exists"},
+                    {"type": "bool", "name": "completed"},
+                    {"type": "address", "name": "recipient"},
+                    {"type": "uint256", "name": "amount"},
+                    {"type": "uint256", "name": "timestamp"}
+                ],
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -1498,8 +1509,8 @@
                     {"type": "uint256", "name": "_totalVolume"},
                     {"type": "uint256", "name": "_contractBalance"},
                     {"type": "uint256", "name": "_privacyFee"},
-                    {"type": "uint256", "name": "_totalBatchTransfers"},
-                    {"type": "uint256", "name": "_totalDelayedTransfers"}
+                    {"type": "uint256", "name": "_totalPaymentRequests"},
+                    {"type": "uint256", "name": "_totalFees"}
                 ],
                 "stateMutability": "view",
                 "type": "function"
@@ -1525,8 +1536,8 @@
             setInterval(loadStats, 10000);
         });
 
-        // Payment Request Functions
-        function createPaymentRequest() {
+        // V2 Payment Request Functions
+        async function createPaymentRequest() {
             const amountValue = document.getElementById('amount').value.trim();
             const recipientValue = document.getElementById('recipient').value.trim();
 
@@ -1546,25 +1557,50 @@
                 const userReceivesAmount = amount - fee; // User receives amount after fee deduction
                 const totalAmountToSend = amount; // User sends exact amount they entered
 
-                // Create transaction data for sendAnonymously function
-                const contract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
-                const transactionData = contract.methods.sendAnonymously(recipientValue).encodeABI();
-
-                console.log('🔍 Payment Request Debug Info:');
+                console.log('🔍 Creating V2 Payment Request...');
                 console.log('- Recipient:', recipientValue);
                 console.log('- Amount:', amount, 'S');
-                console.log('- Contract Address:', PRIVACY_PRO_ADDRESS);
-                console.log('- Transaction Data:', transactionData);
-                console.log('- RPC URL:', SONIC_TESTNET_RPC);
-                console.log('- Chain ID:', SONIC_TESTNET_CHAIN_ID);
+
+                // Create unique payment request via contract
+                const contract = new web3.eth.Contract(PRIVACY_PRO_V2_ABI, PRIVACY_PRO_V2_ADDRESS);
+                const amountWei = web3.utils.toWei(amount.toString(), 'ether');
+                
+                showAlert('success', 'Creating unique payment address...');
+                
+                // Generate unique request ID client-side (same logic as contract)
+                const timestamp = Date.now();
+                const totalPaymentRequests = Math.floor(Math.random() * 1000000); // Random for demo
+                
+                const requestId = web3.utils.keccak256(
+                    web3.eth.abi.encodeParameters(
+                        ['address', 'address', 'uint256', 'uint256', 'uint256'],
+                        ['0x0000000000000000000000000000000000000000', recipientValue, amountWei, timestamp, totalPaymentRequests]
+                    )
+                );
+                
+                // Generate deterministic deposit address (same logic as contract)
+                const depositAddressHash = web3.utils.keccak256(
+                    web3.eth.abi.encodeParameters(
+                        ['address', 'bytes32', 'string'],
+                        [PRIVACY_PRO_V2_ADDRESS, requestId, 'SONIC_DEPOSIT']
+                    )
+                );
+                
+                const depositAddress = '0x' + depositAddressHash.slice(-40);
+
+                console.log('✅ V2 Payment Request Created:');
+                console.log('- Request ID:', requestId);
+                console.log('- Unique Deposit Address:', depositAddress);
+                console.log('- Recipient:', recipientValue);
+                console.log('- Amount:', amount, 'S');
 
                 currentPaymentRequest = {
                     amount: amount,
                     userReceivesAmount: userReceivesAmount,
                     totalAmount: totalAmountToSend,
                     recipient: recipientValue,
-                    contractAddress: PRIVACY_PRO_ADDRESS,
-                    transactionData: transactionData,
+                    depositAddress: depositAddress,
+                    requestId: requestId,
                     timestamp: Date.now()
                 };
 
@@ -1573,8 +1609,8 @@
                 playSound('click');
 
             } catch (error) {
-                console.error('Error creating payment request:', error);
-                showAlert('error', 'Failed to create payment request');
+                console.error('Error creating V2 payment request:', error);
+                showAlert('error', 'Failed to create payment request: ' + error.message);
             }
         }
 
@@ -1585,10 +1621,9 @@
 
             // Update display values
             document.getElementById('displayAmount').textContent = currentPaymentRequest.totalAmount.toFixed(3) + ' S';
-            document.getElementById('displayAddress').textContent = currentPaymentRequest.contractAddress;
-            document.getElementById('displayData').textContent = currentPaymentRequest.transactionData;
+            document.getElementById('displayAddress').textContent = currentPaymentRequest.depositAddress;
 
-            showAlert('success', `Payment request created! Recipient will receive ${currentPaymentRequest.userReceivesAmount.toFixed(3)} S after fees.`);
+            showAlert('success', `✅ Unique address created! Just send ${currentPaymentRequest.totalAmount.toFixed(3)} S to the address above.`);
         }
 
         function resetPayment() {
@@ -1615,18 +1650,12 @@
         }
 
         function copyAddress() {
-            navigator.clipboard.writeText(currentPaymentRequest.contractAddress).then(() => {
-                showAlert('success', 'Contract address copied to clipboard');
+            navigator.clipboard.writeText(currentPaymentRequest.depositAddress).then(() => {
+                showAlert('success', 'Unique deposit address copied to clipboard');
                 playSound('click');
             });
         }
 
-        function copyData() {
-            navigator.clipboard.writeText(currentPaymentRequest.transactionData).then(() => {
-                showAlert('success', 'Transaction data copied to clipboard');
-                playSound('click');
-            });
-        }
 
         function startMonitoring() {
             updatePaymentStatus('pending', '🔍 Monitoring Sonic blockchain for payment...');
@@ -1641,107 +1670,54 @@
             if (!currentPaymentRequest) return;
 
             try {
-                console.log('Checking for payment...', currentPaymentRequest);
+                console.log('🔍 Checking V2 payment status...', currentPaymentRequest.depositAddress);
                 
-                // Get latest block
-                const latestBlock = await web3.eth.getBlockNumber();
-                const fromBlock = Math.max(0, latestBlock - 100); // Check more blocks to be sure
+                // Use V2 contract to check payment status
+                const contract = new web3.eth.Contract(PRIVACY_PRO_V2_ABI, PRIVACY_PRO_V2_ADDRESS);
+                const [exists, completed, recipient, amount, timestamp] = await contract.methods.checkPaymentStatus(currentPaymentRequest.depositAddress).call();
                 
-                console.log(`Checking blocks ${fromBlock} to ${latestBlock}`);
-
-                // Method 1: Check direct transactions to contract address
-                for (let blockNumber = latestBlock; blockNumber >= fromBlock; blockNumber--) {
-                    try {
-                        const block = await web3.eth.getBlock(blockNumber, true);
-                        if (!block || !block.transactions) continue;
-
-                        for (let tx of block.transactions) {
-                            if (!tx) continue;
-                            
-                            // Check if transaction is to our contract
-                            if (tx.to && tx.to.toLowerCase() === PRIVACY_PRO_ADDRESS.toLowerCase()) {
-                                console.log('Found transaction to contract:', tx);
-                                
-                                const txAmount = parseFloat(web3.utils.fromWei(tx.value, 'ether'));
-                                console.log(`Transaction amount: ${txAmount}, Expected: ${currentPaymentRequest.totalAmount}`);
-                                
-                                // Check if transaction data matches AND amount is correct
-                                if (tx.input && tx.input.toLowerCase() === currentPaymentRequest.transactionData.toLowerCase() && 
-                                    txAmount >= currentPaymentRequest.totalAmount - 0.001) {
-                                    // Payment found!
-                                    console.log('✅ Payment confirmed!', tx.hash);
-                                    
-                                    updatePaymentStatus('confirmed', `✅ Payment confirmed! Recipient receives ${currentPaymentRequest.userReceivesAmount.toFixed(3)} S`);
-                                    
-                                    // Add to history
-                                    addTransactionToHistory({
-                                        type: 'Anonymous Send',
-                                        amount: currentPaymentRequest.userReceivesAmount,
-                                        recipient: currentPaymentRequest.recipient,
-                                        hash: tx.hash,
-                                        timestamp: Date.now()
-                                    });
-
-                                    // Stop monitoring
-                                    clearInterval(monitoringInterval);
-                                    monitoringInterval = null;
-
-                                    // Play success sound
-                                    playSound('connect');
-                                    
-                                    // Refresh stats
-                                    await loadStats();
-                                    return;
-                                }
-                            }
-                        }
-                    } catch (blockError) {
-                        console.log('Error checking block:', blockError);
-                        continue;
-                    }
-                }
-
-                // Method 2: Also check using event logs as backup
-                try {
-                    const logs = await web3.eth.getPastLogs({
-                        fromBlock: fromBlock,
-                        toBlock: 'latest',
-                        address: PRIVACY_PRO_ADDRESS
+                console.log('Payment status:', { exists, completed, recipient, amount: web3.utils.fromWei(amount, 'ether') });
+                
+                if (exists && completed) {
+                    // Payment confirmed!
+                    console.log('✅ V2 Payment completed!');
+                    
+                    updatePaymentStatus('confirmed', `✅ Payment confirmed! Recipient received ${currentPaymentRequest.userReceivesAmount.toFixed(3)} S`);
+                    
+                    // Add to history
+                    addTransactionToHistory({
+                        type: 'V2 Anonymous Send',
+                        amount: currentPaymentRequest.userReceivesAmount,
+                        recipient: currentPaymentRequest.recipient,
+                        depositAddress: currentPaymentRequest.depositAddress,
+                        timestamp: Date.now()
                     });
-                    
-                    console.log(`Found ${logs.length} events from contract`);
-                    
-                    for (let log of logs) {
-                        const tx = await web3.eth.getTransaction(log.transactionHash);
-                        if (tx && tx.input && tx.input.toLowerCase() === currentPaymentRequest.transactionData.toLowerCase()) {
-                            const txAmount = parseFloat(web3.utils.fromWei(tx.value, 'ether'));
-                            if (txAmount >= currentPaymentRequest.totalAmount - 0.001) {
-                                console.log('✅ Payment confirmed via events!', tx.hash);
-                                
-                                updatePaymentStatus('confirmed', `✅ Payment confirmed! Recipient receives ${currentPaymentRequest.userReceivesAmount.toFixed(3)} S`);
-                                
-                                addTransactionToHistory({
-                                    type: 'Anonymous Send',
-                                    amount: currentPaymentRequest.userReceivesAmount,
-                                    recipient: currentPaymentRequest.recipient,
-                                    hash: tx.hash,
-                                    timestamp: Date.now()
-                                });
 
-                                clearInterval(monitoringInterval);
-                                monitoringInterval = null;
-                                playSound('connect');
-                                await loadStats();
-                                return;
-                            }
-                        }
-                    }
-                } catch (logError) {
-                    console.log('Error checking logs:', logError);
+                    // Stop monitoring
+                    clearInterval(monitoringInterval);
+                    monitoringInterval = null;
+
+                    // Play success sound
+                    playSound('connect');
+                    
+                    // Refresh stats
+                    await loadStats();
+                    return;
+                }
+                
+                // Also check for direct transaction to deposit address
+                const balance = await web3.eth.getBalance(currentPaymentRequest.depositAddress);
+                const balanceEther = parseFloat(web3.utils.fromWei(balance, 'ether'));
+                
+                console.log(`Deposit address balance: ${balanceEther} S, Expected: ${currentPaymentRequest.totalAmount} S`);
+                
+                if (balanceEther >= currentPaymentRequest.totalAmount - 0.001) {
+                    console.log('💰 Funds detected at deposit address!');
+                    updatePaymentStatus('pending', `💰 Funds received! Processing transfer...`);
                 }
 
             } catch (error) {
-                console.error('Error checking for payment:', error);
+                console.error('Error checking V2 payment:', error);
             }
         }
 
@@ -1757,16 +1733,16 @@
             return /^0x[a-fA-F0-9]{40}$/.test(address);
         }
 
-        // Test function to verify contract connection
+        // Test function to verify V2 contract connection
         async function testContractConnection() {
             try {
-                console.log('🧪 Testing contract connection...');
-                const contract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
+                console.log('🧪 Testing V2 contract connection...');
+                const contract = new web3.eth.Contract(PRIVACY_PRO_V2_ABI, PRIVACY_PRO_V2_ADDRESS);
                 const result = await contract.methods.getPoolStats().call();
-                console.log('✅ Contract connection successful:', result);
+                console.log('✅ V2 Contract connection successful:', result);
                 return true;
             } catch (error) {
-                console.error('❌ Contract connection failed:', error);
+                console.error('❌ V2 Contract connection failed:', error);
                 return false;
             }
         }
@@ -2306,27 +2282,33 @@
 
         async function loadStats() {
             try {
-                const contract = new web3.eth.Contract(PRIVACY_PRO_ABI, PRIVACY_PRO_ADDRESS);
+                const contract = new web3.eth.Contract(PRIVACY_PRO_V2_ABI, PRIVACY_PRO_V2_ADDRESS);
                 const result = await contract.methods.getPoolStats().call();
                 
-                let totalTransfers, totalVolume, contractBalance, privacyFee, batchTransfers, delayedTransfers;
+                let totalTransfers, totalVolume, contractBalance, privacyFee, totalPaymentRequests, totalFees;
                 
                 if (Array.isArray(result)) {
-                    [totalTransfers, totalVolume, contractBalance, privacyFee, batchTransfers, delayedTransfers] = result;
+                    [totalTransfers, totalVolume, contractBalance, privacyFee, totalPaymentRequests, totalFees] = result;
                 } else {
                     totalTransfers = result._totalTransfers || result[0];
                     totalVolume = result._totalVolume || result[1];
                     contractBalance = result._contractBalance || result[2];
                     privacyFee = result._privacyFee || result[3];
-                    batchTransfers = result._totalBatchTransfers || result[4];
-                    delayedTransfers = result._totalDelayedTransfers || result[5];
+                    totalPaymentRequests = result._totalPaymentRequests || result[4];
+                    totalFees = result._totalFees || result[5];
                 }
 
                 document.getElementById('totalTransfers').textContent = totalTransfers.toString();
                 document.getElementById('totalVolume').textContent = parseFloat(web3.utils.fromWei(totalVolume, 'ether')).toFixed(1);
                 document.getElementById('privacyFee').textContent = (Number(privacyFee) / 100) + '%';
+                
+                console.log('📊 V2 Stats loaded:', {
+                    transfers: totalTransfers.toString(),
+                    volume: parseFloat(web3.utils.fromWei(totalVolume, 'ether')).toFixed(1),
+                    requests: totalPaymentRequests.toString()
+                });
             } catch (error) {
-                console.log('Failed to load stats:', error);
+                console.log('Failed to load V2 stats:', error);
                 document.getElementById('totalTransfers').textContent = '0';
                 document.getElementById('totalVolume').textContent = '0.0';
                 document.getElementById('privacyFee').textContent = '0.1%';

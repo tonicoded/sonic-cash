@@ -22,28 +22,36 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
         :root {
-            --bg-primary: linear-gradient(135deg, #0a0d1f 0%, #1a1d3a 50%, #0f1229 100%);
-            --bg-card: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-            --border-primary: rgba(0, 212, 255, 0.25);
+            /* Sonic Brand Colors - Clean Dark Theme */
+            --bg-primary: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1329 100%);
+            --bg-card: linear-gradient(145deg, rgba(0, 132, 255, 0.08) 0%, rgba(0, 200, 255, 0.03) 100%);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-primary: rgba(0, 182, 255, 0.3);
+            --border-secondary: rgba(255, 255, 255, 0.1);
+            
+            /* Text Colors */
             --text-primary: #ffffff;
-            --text-secondary: #a0b3cc;
-            --accent-blue: #00d4ff;
-            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066cc 100%);
-            --success-bg: rgba(34, 197, 94, 0.12);
-            --success-border: rgba(34, 197, 94, 0.3);
-            --success-text: #4ade80;
-            --error-bg: rgba(239, 68, 68, 0.12);
+            --text-secondary: #a8bfda;
+            --text-muted: #6b7d96;
+            
+            /* Sonic Blue Accent */
+            --sonic-blue: #00b6ff;
+            --sonic-blue-light: #33c4ff;
+            --sonic-gradient: linear-gradient(135deg, #00b6ff 0%, #0091ff 50%, #0070dd 100%);
+            --sonic-glow: rgba(0, 182, 255, 0.4);
+            
+            /* Status Colors */
+            --success-bg: rgba(16, 185, 129, 0.15);
+            --success-border: rgba(16, 185, 129, 0.3);
+            --success-text: #34d399;
+            --error-bg: rgba(239, 68, 68, 0.15);
             --error-border: rgba(239, 68, 68, 0.3);
             --error-text: #f87171;
-        }
-
-        [data-theme="light"] {
-            --bg-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-            --bg-card: linear-gradient(145deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
-            --border-primary: rgba(0, 212, 255, 0.3);
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --accent-blue: #0284c7;
+            
+            /* Shadows */
+            --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 182, 255, 0.15);
+            --shadow-button: 0 8px 32px rgba(0, 182, 255, 0.4);
+            --shadow-hover: 0 16px 48px rgba(0, 182, 255, 0.5);
         }
         
         html {
@@ -75,13 +83,12 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(0, 150, 200, 0.03) 0%, transparent 50%);
+                radial-gradient(circle at 25% 40%, rgba(0, 182, 255, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 75% 20%, rgba(0, 145, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(0, 112, 221, 0.04) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
+            opacity: 1;
         }
 
         .container {
@@ -103,7 +110,7 @@
         .header h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            background: var(--accent-gradient);
+            background: var(--sonic-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -111,6 +118,7 @@
             letter-spacing: -0.02em;
             line-height: 1.1;
             position: relative;
+            text-shadow: 0 0 40px var(--sonic-glow);
         }
 
         .header h1::after {
@@ -130,49 +138,6 @@
             letter-spacing: 0.5px;
         }
 
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-primary);
-            border-radius: 50px;
-            width: 60px;
-            height: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            padding: 3px;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .theme-toggle::before {
-            content: '🌙';
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
-        }
-
-        [data-theme="light"] .theme-toggle::before {
-            content: '☀️';
-            transform: translateX(30px);
-        }
-
-        /* Force theme styles for mobile */
-        body[data-theme="light"] {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%) !important;
-        }
-
-        body[data-theme="dark"] {
-            background: linear-gradient(135deg, #0a0d1f 0%, #1a1d3a 50%, #0f1229 100%) !important;
-        }
 
         .main-grid {
             display: grid;
@@ -186,14 +151,22 @@
             border: 1px solid var(--border-primary);
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.4),
-                0 8px 24px rgba(0, 212, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(25px);
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--sonic-blue), transparent);
+            opacity: 0.6;
         }
 
         .stats-grid {
@@ -204,24 +177,43 @@
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-glass);
+            border: 1.5px solid var(--border-secondary);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--sonic-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-2px);
             border-color: var(--border-primary);
+            box-shadow: 0 8px 24px rgba(0, 182, 255, 0.2);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--accent-blue);
+            color: var(--sonic-blue);
             margin-bottom: 8px;
             font-family: ui-monospace, monospace;
         }
@@ -412,7 +404,7 @@
 
         .btn {
             width: 100%;
-            background: var(--accent-gradient);
+            background: var(--sonic-gradient);
             color: white;
             border: none;
             padding: 20px 24px;
@@ -421,15 +413,13 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 8px 32px rgba(0, 212, 255, 0.3),
-                0 2px 8px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-button);
             font-family: 'Inter', sans-serif;
             letter-spacing: 0.3px;
             margin-bottom: 12px;
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(0, 182, 255, 0.5);
         }
 
         .btn::before {
@@ -449,9 +439,8 @@
 
         .btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 
-                0 16px 48px rgba(0, 212, 255, 0.4),
-                0 8px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--sonic-blue-light);
         }
 
         .btn:disabled {
@@ -738,18 +727,6 @@
             .privacy-score-value {
                 font-size: 12px;
             }
-            .theme-toggle {
-                width: 50px;
-                height: 25px;
-                top: 15px;
-                right: 15px;
-            }
-            .theme-toggle::before {
-                font-size: 14px;
-            }
-            [data-theme="light"] .theme-toggle::before {
-                transform: translateX(25px);
-            }
             .sound-toggle {
                 width: 45px;
                 height: 45px;
@@ -841,8 +818,7 @@
         }
     </style>
 </head>
-<body data-theme="dark">
-    <div class="theme-toggle" onclick="toggleTheme()"></div>
+<body>
     <div class="sound-toggle" onclick="toggleSound()" title="Toggle Sound Effects">🔊</div>
     
     <div class="container">
@@ -1099,56 +1075,6 @@
             }
         });
 
-        // Theme Management - Fixed for mobile
-        function toggleTheme() {
-            try {
-                const body = document.body;
-                const currentTheme = body.getAttribute('data-theme') || 'dark';
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                // Force attribute change
-                body.setAttribute('data-theme', newTheme);
-                body.className = body.className; // Force re-render
-                
-                // Save to localStorage
-                localStorage.setItem('theme', newTheme);
-                
-                // Force CSS re-evaluation
-                setTimeout(() => {
-                    body.style.display = 'none';
-                    body.offsetHeight; // Trigger reflow
-                    body.style.display = 'flex';
-                }, 10);
-                
-                playSound('click');
-                console.log('Theme toggled to:', newTheme);
-            } catch (error) {
-                console.error('Theme toggle error:', error);
-            }
-        }
-
-        // Initialize theme immediately
-        (function initTheme() {
-            try {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                document.body.setAttribute('data-theme', savedTheme);
-                console.log('Initial theme set to:', savedTheme);
-            } catch (error) {
-                console.error('Theme init error:', error);
-                document.body.setAttribute('data-theme', 'dark');
-            }
-        })();
-
-        // Also set on DOM ready (fallback)
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                document.body.setAttribute('data-theme', savedTheme);
-                console.log('Theme loaded on DOM ready:', savedTheme);
-            } catch (error) {
-                console.error('Theme DOM ready error:', error);
-            }
-        });
 
         // Sound Management
         function toggleSound() {
